@@ -8,5 +8,18 @@ It is sufficient to implement the interface GlobalTWClass()
 
 Example: 
 
-class ExampleInstrumentedTest: GlobalTWClass()
+    class ExampleInstrumentedTest: GlobalTWClass()
+
+To implement the library in the project it needs to:
+1 - Add this line in settings.gradle :
+
+    repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+    ...
+    }
+    
+2 - Implement the dependency in module Build.gradle:
+
+    implementation 'com.github.giuseppegargani:JsonReport:0.0.1'
 
