@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "JsonReport"
 include ':app'
+include ':instrumentedreport'
