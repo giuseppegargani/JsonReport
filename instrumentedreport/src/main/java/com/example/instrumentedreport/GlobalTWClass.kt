@@ -32,7 +32,7 @@ open class GlobalTWClass {
         @AfterClass
         @JvmStatic
         fun afterClass() {
-            //createJson()
+            createJson()
         }
 
         //if a globalTestReport already exists return a global file to the companion object corresponding variable
@@ -79,19 +79,21 @@ open class GlobalTWClass {
             Log.d("giuseppeRisultati", "lista: $listaSingleTests e nome: $pckgDenomination e $actualClass")
         }
 
-        //funzione che crea il file Json
-        /*fun createJson(){
+        //Write the json file!!!
+        fun createJson(){
+
+            var actualGlobalClass: CompositeTestClass? = null
 
             //verifica se esiste o meno
             val context= InstrumentationRegistry.getInstrumentation().targetContext
             val path: File = context.getExternalFilesDir(null)!!
             Log.d("giuseppe", "nome directory $path")
-            val file = File(path, "risultato.txt")
+            val file = File(path, "JsonTestReport.txt")
 
             //val file = File(getApplicationContext<Context>().filesDir, "whatever.txt")
 
             //Verifica se esiste e modifica ramo
-            if (file.exists()) {
+            /*if (file.exists()) {
                 //si deve leggere ed assegnare a Json e leggere json
                 Log.d("giuseppeJson", "Il file esiste ed e' ")
                 var classeSingola=leggiJson(file)
@@ -118,7 +120,7 @@ open class GlobalTWClass {
                 //si prende il nome della classe e si scompone (si toglie il nome del modulo dalla classe)
                 Log.d("giuseppeJson", "il file non esiste e va creato")
 
-            }
+            }*/
             //se il file esiste modificalo altrimenti crealo di nuovo!!!
 
             //la lista nel nostro caso potrebbe essere una lista di elementi della Data class
@@ -131,7 +133,7 @@ open class GlobalTWClass {
             Log.d("giuseppeJson", "otherList $otherList")*/
 
             //VERIFICA CHE VEDE LA DIRECTORY Esterna di salvataggio dati
-            val path2 = "src/test"
+            /*val path2 = "src/test"
             val fileDirectory = File(path2)
             val files = fileDirectory.listFiles()
             files.map { Log.d("giuseppeLista", "ecco un file $it") }
@@ -145,10 +147,10 @@ open class GlobalTWClass {
             file.parentFile.mkdirs()
             val writer = FileWriter(file3)
             writer.append("this is a test")
-            writer.close()
+            writer.close()*/
 
             //un test singolo (con la data class)
-            var elementoSingolo = SingleTest("primo Test", "Success")
+            /*var elementoSingolo = SingleTest("primo Test", "Success")
             var secondoElemento = SingleTest("secondo test", "Success")
             var classeAttuale = SingleClass(mutableListOf(elementoSingolo, secondoElemento))
 
@@ -157,17 +159,29 @@ open class GlobalTWClass {
             var testRipreso = Gson().fromJson<SingleClass>(jsonStringLista, SingleClass::class.java)
             Log.d("giuseppeJson", "elemento jsonString $jsonString e lista $classeAttuale")
             Log.d("giuseppeJson", "elemento json $classeAttuale")
-            Log.d("giuseppeJson", " e rintracciare un elemento da nested ${testRipreso.listaTests[1].nameTest}")
+            Log.d("giuseppeJson", " e rintracciare un elemento da nested ${testRipreso.listaTests[1].nameTest}")*/
 
             /*val context= InstrumentationRegistry.getInstrumentation().targetContext
             val path: File = context.getExternalFilesDir(null)!!
             Log.d("giuseppe", "nome directory $path")
             val file = File(path, "risultato.txt")*/
-            val stream = FileOutputStream(file2)
+
+            //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
+            if(globalTestObject==null) {
+                val actualTestClass = SingleClass(actualClass,listaSingleTests)
+                actualGlobalClass = CompositeTestClass(pckgDenomination, mutableListOf(actualTestClass))
+                Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
+            } else {}
+
+            //convert in Json
+            var finalJsonString = Gson().toJson(actualGlobalClass)
+
+            //writing
+            val stream = FileOutputStream(file)
             stream.use { stream ->
-                stream.write(jsonStringLista.toByteArray())
+                stream.write(finalJsonString.toByteArray())
             }
-        }*/
+        }
 
         //si recupera un oggetto Json da un file!!!
         fun leggiJson (file: File): SingleClass? {
