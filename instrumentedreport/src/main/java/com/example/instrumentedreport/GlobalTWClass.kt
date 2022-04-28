@@ -15,6 +15,7 @@ open class GlobalTWClass {
     companion object {
         //variabile della lista dei tests
         var listaSingleTests = mutableListOf<SingleTest>()
+        //questo e' l'oggetto che viene letto (se il file e' gia' presente)
         var globalTestObject: CompositeTestClass? = null
 
         var pckgDenomination: String = ""
@@ -23,9 +24,10 @@ open class GlobalTWClass {
         @BeforeClass
         @JvmStatic
         fun beforeClass(){
+            Log.d("giuseppeCheck", "valore di globalTestObject $globalTestObject")
             listaSingleTests = mutableListOf()
             //verifica se per caso esiste già un file json con i risultati
-            //globalTestObject = verifyPresence()
+            globalTestObject = verifyPresence()
         }
 
         //Si devono mettere come static!!!
@@ -36,11 +38,14 @@ open class GlobalTWClass {
         }
 
         //if a globalTestReport already exists return a global file to the companion object corresponding variable
-        fun verifyPresence()/*: CompositeTestClass*/ {
+        fun verifyPresence(): CompositeTestClass? {
+            //local variable
+            var localObject: CompositeTestClass? = null
             //check if exists already a file
             val context= InstrumentationRegistry.getInstrumentation().targetContext
             val path: File = context.getExternalFilesDir(null)!!
-            val file = File(path, "globalTestReport.txt")
+            //we'll be able to change the fileName
+            val file = File(path, "JsonTestReport.json")
 
             //Verifica se esiste e modifica ramo
             /*if (file.exists()) {
@@ -71,6 +76,16 @@ open class GlobalTWClass {
 
             }*/
 
+            if(file.exists()){
+                Log.d("giuseppeJson", "il file esiste gia' ")
+                //if exists assign to the global variable
+                localObject=leggiJson(file)
+                Log.d("giuseppeJson", " Oggetto json letto da file ${localObject?.test_classes_list?.get(0)?.tests_list}")
+            }
+            else { Log.d("giuseppeJson", "il file NON esiste gia'") }
+
+            Log.d("giuseppeObject", "globalTestObject $localObject")
+            return localObject
         }
 
         //add singleTest to the local list!!!!
@@ -82,13 +97,15 @@ open class GlobalTWClass {
         //Write the json file!!!
         fun createJson(){
 
+            Log.d("giuseppeObject", "Object in entrata di create Json $globalTestObject")
+
             var actualGlobalClass: CompositeTestClass? = null
 
             //verifica se esiste o meno
             val context= InstrumentationRegistry.getInstrumentation().targetContext
             val path: File = context.getExternalFilesDir(null)!!
             Log.d("giuseppe", "nome directory $path")
-            val file = File(path, "JsonTestReport.txt")
+            val file = File(path, "JsonTestReport.json")
 
             //val file = File(getApplicationContext<Context>().filesDir, "whatever.txt")
 
@@ -171,12 +188,34 @@ open class GlobalTWClass {
                 val actualTestClass = SingleClass(actualClass,listaSingleTests)
                 actualGlobalClass = CompositeTestClass(pckgDenomination, mutableListOf(actualTestClass))
                 Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
-            } else {}
+            }
+            else {
+                Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
+                //check if the test class already exists (otherwise simply add)
+                //if(actualGlobalClass!!.test_classes_list!!.map{ if(it.test_class_name== actualClass) } )
+                if(globalTestObject!!.test_classes_list!!.any{ it.test_class_name== actualClass }) {
+                    Log.d("giuseppejson", "Gia' effettuato test di questa classe")
+                    globalTestObject!!.test_classes_list!!.filter { it.test_class_name== actualClass }.forEach { it.tests_list= listaSingleTests }
+                    actualGlobalClass= CompositeTestClass(globalTestObject!!.package_name, globalTestObject!!.test_classes_list)
+                }
+                else {
+                    Log.d("giuseppeJson", " File esiste ma non gia' effettuato test di questa classe")
+                    //we create a new SingleClass (adding also the classname)
+                    val actualTestClass = SingleClass(actualClass, listaSingleTests)
+                    //we create a new list of test classes
+                    val newClassesList = globalTestObject!!.test_classes_list
+                    //and we add a new element
+                    newClassesList.add(actualTestClass)
+                    //we create a new CompositeTestClass
+                    actualGlobalClass= CompositeTestClass(globalTestObject!!.package_name, newClassesList)
+                }
+
+            }
 
             //convert in Json
             var finalJsonString = Gson().toJson(actualGlobalClass)
 
-            //writing
+            //writing to file
             val stream = FileOutputStream(file)
             stream.use { stream ->
                 stream.write(finalJsonString.toByteArray())
@@ -184,14 +223,14 @@ open class GlobalTWClass {
         }
 
         //si recupera un oggetto Json da un file!!!
-        fun leggiJson (file: File): SingleClass? {
+        fun leggiJson (file: File): CompositeTestClass? {
             var txt: String? = null
-            var singleClass:SingleClass? = null
+            var compositeTestClass:CompositeTestClass? = null
 
             try {
                 val reader = FileReader(file)
                 txt = reader.readText()
-                Log.d("giuseppeLettura", "stringa letta $txt")
+                Log.d("giuseppeJson", "stringa letta $txt e file $file")
                 reader.close()
             } catch (e: IOException) {
                 // Exception
@@ -199,10 +238,10 @@ open class GlobalTWClass {
             }
             //se text diverso da null convertilo in oggetto Json (altrimenti restituira' null come singleClass)
             txt?.let {
-                singleClass = Gson().fromJson<SingleClass>(it, SingleClass::class.java)
+                compositeTestClass = Gson().fromJson<CompositeTestClass>(it, CompositeTestClass::class.java)
             }
 
-            return singleClass
+            return compositeTestClass
         }
 
         //da file o Uri
