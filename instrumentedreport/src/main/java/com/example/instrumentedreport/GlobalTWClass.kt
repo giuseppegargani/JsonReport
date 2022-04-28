@@ -9,7 +9,7 @@ import org.junit.Rule
 import org.junit.rules.TestRule
 import java.io.*
 
-class GlobalTWClass {
+open class GlobalTWClass {
 
     //because some methods are static
     companion object {
@@ -17,7 +17,7 @@ class GlobalTWClass {
         var listaSingleTests = mutableListOf<SingleTest>()
         var globalTestObject: CompositeTestClass? = null
 
-        var packageDenom: String = ""
+        var pckgDenomination: String = ""
         var actualClass: String = ""
 
         @BeforeClass
@@ -32,11 +32,7 @@ class GlobalTWClass {
         @AfterClass
         @JvmStatic
         fun afterClass() {
-            Log.d("giuseppeRisultati", " nome Classe: ${javaClass.canonicalName}")
-            Log.d("giuseppeRisultati", "terminata la classe!!!!!!!!!!!")
-            println("terminata la classe!!!!!! e successi $testResultsStatus")
-            //funzione creata da Giuseppe alla conclusione
-            createJson()
+            //createJson()
         }
 
         //if a globalTestReport already exists return a global file to the companion object corresponding variable
@@ -77,13 +73,14 @@ class GlobalTWClass {
 
         }
 
-        //metodo che aggiunge i successi a oggetto Json da salvare
+        //add singleTest to the local list!!!!
         fun addSingleTest(singleTest: SingleTest){
             listaSingleTests.add(singleTest)
+            Log.d("giuseppeRisultati", "lista: $listaSingleTests e nome: $pckgDenomination e $actualClass")
         }
 
         //funzione che crea il file Json
-        fun createJson(){
+        /*fun createJson(){
 
             //verifica se esiste o meno
             val context= InstrumentationRegistry.getInstrumentation().targetContext
@@ -170,7 +167,7 @@ class GlobalTWClass {
             stream.use { stream ->
                 stream.write(jsonStringLista.toByteArray())
             }
-        }
+        }*/
 
         //si recupera un oggetto Json da un file!!!
         fun leggiJson (file: File): SingleClass? {
