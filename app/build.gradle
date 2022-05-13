@@ -30,6 +30,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    testVariants.all { variant ->
+        variant.connectedInstrumentTest.doLast {
+            println "The name of the test type: $connectedInstrumentTest.name"
+            println "The type of test $connectedInstrumentTest.class"
+        }
+        connectedAndroidTest.finalizedBy(':instrumentedreport:passReport')
+        assembleDebugAndroidTest.finalizedBy(':instrumentedreport:passReport')
+    }
 }
 
 dependencies {
