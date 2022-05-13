@@ -1,4 +1,4 @@
-//prova ancora
+//little documentation: https://stackoverflow.com/questions/61060401/how-to-access-gradle-defaultconfig-in-a-parent-gradle-file
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
