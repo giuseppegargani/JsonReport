@@ -34,22 +34,25 @@ android {
     //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
     task passReport (type: Exec) {
 
-        def prova = 'com'
+        def nomeapp = 'nome'
+
+        doLast {
+            project(':app') {
+                nomeapp = it.android.defaultConfig.applicationId
+                println "buildV:::: $nomeapp"
+            }
+        }
         //esegue il comando
         //commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', 'com.example.tests_vari.ExampleInstrumentedTest', 'com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner'//, '&&', 'adb', 'shell', 'cat', 'sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
         //commandLine 'adb shell am instrument -w -e class com.example.tests_vari.ExampleInstrumentedTest com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner && adb pull sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
         //commandLine 'adb', 'pull', 'sdcard/android/data/com.example.reportroot/files/JsonTestReport.json', '../'
         //parent.name
-        commandLine 'adb', 'devices'
-        doLast{
-            println("LANCIATA TASK!!!!!!!!!!!!! $prova e $parent.project.name")
-        }
         doLast {
             try{
                 exec {
                     //copia il file da emulatore a directory locale
-                    commandLine 'adb', 'pull', "sdcard/android/data/${prova}.example.jsonreport/files/JsonTestReport.json", '../'
-
+                    commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                    println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
                 }
                 //e legge per verifica
                 String fileContents = new File('JsonTestReport.json').text
@@ -57,7 +60,6 @@ android {
             } catch(all){
                 println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
             }
-
         }
     }
 }
