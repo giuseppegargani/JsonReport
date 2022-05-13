@@ -42,7 +42,7 @@ android {
     }
 
     //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
-    task passReport (type: Exec) {
+    task passReport () {
 
         def nomeapp = 'nome'
 
@@ -62,8 +62,8 @@ android {
                 exec {
                     //copia il file da emulatore a directory locale
                     commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
-                    println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
                 }
+                println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
                 //e legge per verifica
                 String fileContents = new File('JsonTestReport.json').text
                 println(fileContents)
