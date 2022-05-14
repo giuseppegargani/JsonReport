@@ -44,6 +44,8 @@ android {
     //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
     task passReport () {
 
+        //dependsOn(':instrumentedreport:primaTask')
+
         def nomeapp = 'nome'
 
         doLast {
@@ -72,6 +74,13 @@ android {
             }
         }
     }
+
+    task primaTask() {
+        doLast {
+            println("PRIMA DELLA CUSTOM TASK!!!!!!!!!!!!!!!!!!!!")
+        }
+    }
+
 }
 
 dependencies {

@@ -31,14 +31,117 @@ android {
         jvmTarget = '1.8'
     }
 
+    def thread = null
+
     testVariants.all { variant ->
         variant.connectedInstrumentTest.doLast {
             println "The name of the test type: $connectedInstrumentTest.name"
             println "The type of test $connectedInstrumentTest.class"
         }
-        connectedAndroidTest.finalizedBy(':instrumentedreport:passReport')
-        assembleDebugAndroidTest.finalizedBy(':instrumentedreport:passReport')
+//        connectedAndroidTest.finalizedBy(':app:passReport')
+        assembleDebugAndroidTest.finalizedBy(':app:passReport')
+        //assembleDebugAndroidTest.mustRunAfter(':app:passReport')
+        tasks.getByPath(':instrumentedreport:passReport').mustRunAfter(':app:assembleDebugAndroidTest')
+//        assembleDebugAndroidTest.dependsOn(primaAssembleDebug)
+        //task(':instrumentedreport:passReport').dependsOn(':instrumentedreport:primaTask')
+        //tasks.getByPath(':instrumentedreport:passReport').dependsOn(':instrumentedreport:primaTask')
+        //tasks.getByPath(':instrumentedreport:compileDebugKotlin').finalizedBy(':instrumentedreport:passReport')
+        //tasks.getByPath(':app:assembleDebug').finalizedBy(':instrumentedreport:passReport')
     }
+
+    /*task primaAssembleDebug(){
+        doLast {
+            println("DIPENDENZA DELLA TASK ASSEMBLEDEBUGTEST")
+        }
+        thread = Thread.start {
+            sleep(15000)
+            println "completato il thread"
+        }
+    }*/
+
+
+    //def thread = null
+
+    //esiste da prima e non si puo' toccare (builtin task)
+    task ciao (){
+        doLast {
+            println("ECCO LA TASK CIAO")
+        }
+        doLast {
+            thread.join()
+        }
+    }
+
+    task primadiciao() {
+        doLast {
+            println("DIPENDENZA DELLA TASK CIAO")
+        }
+        thread= Thread.start {
+            sleep(3000)
+            println "completato il thread"
+        }
+    }
+
+    task passReport () {
+
+        def nomeapp = 'nome'
+
+        doLast {
+            project(':app') {
+                nomeapp = it.android.defaultConfig.applicationId
+                println "buildV:::: $nomeapp"
+            }
+        }
+        /*doLast {
+            thread.join()
+        }*/
+//        thread= Thread.start {
+//            sleep(5000)
+//            //println "completato il thread"
+//            doLast {
+//                try{
+//                    exec {
+//                        //copia il file da emulatore a directory locale
+//                        commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+//                    }
+//                    //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                    //e legge per verifica
+//                    //String fileContents = new File('JsonTestReport.json').text
+//                    //println(fileContents)
+//                } catch(all){
+//                    println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                }
+//            }
+//        }
+//        doLast {
+//            thread.join()
+//        }
+        doLast {
+            try{
+                exec {
+                    //copia il file da emulatore a directory locale
+                    commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                }
+                //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+                //e legge per verifica
+                //String fileContents = new File('JsonTestReport.json').text
+                //println(fileContents)
+            } catch(all){
+                println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+            }
+        }
+        //esegue il comando
+        //commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', 'com.example.tests_vari.ExampleInstrumentedTest', 'com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner'//, '&&', 'adb', 'shell', 'cat', 'sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
+        //commandLine 'adb shell am instrument -w -e class com.example.tests_vari.ExampleInstrumentedTest com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner && adb pull sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
+        //commandLine 'adb', 'pull', 'sdcard/android/data/com.example.reportroot/files/JsonTestReport.json', '../'
+        //parent.name
+    }
+
+//    allprojects{
+//        //ciao.dependsOn(primadiciao)
+//        //connectedAndroidTest.finalizedBy(':app:passReport')
+//        assembleDebugAndroidTest.finalizedBy(':app:passReport')
+//    }
 }
 
 dependencies {
