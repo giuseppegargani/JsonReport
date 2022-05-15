@@ -47,6 +47,45 @@ android {
         //tasks.getByPath(':instrumentedreport:passReport').dependsOn(':instrumentedreport:primaTask')
         //tasks.getByPath(':instrumentedreport:compileDebugKotlin').finalizedBy(':instrumentedreport:passReport')
         //tasks.getByPath(':app:assembleDebug').finalizedBy(':instrumentedreport:passReport')
+
+//        tasks.whenTaskAdded { task ->
+//            if (task.class.simpleName == 'KotlinCompile_Decorated') {
+//                task.finalizedBy {
+//                    try{
+//                        exec {
+//                            //copia il file da emulatore a directory locale
+//                            commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+//                        }
+//                        //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                        //e legge per verifica
+//                        //String fileContents = new File('JsonTestReport.json').text
+//                        //println(fileContents)
+//                        println("RIUSCITO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//                    } catch(all){
+//                        println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                    }
+//                }
+//            }
+//        }
+
+        tasks.whenTaskAdded { task ->
+            task.finalizedBy {
+                    try{
+                        exec {
+                            //copia il file da emulatore a directory locale
+                            commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                        }
+                        //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+                        //e legge per verifica
+                        //String fileContents = new File('JsonTestReport.json').text
+                        //println(fileContents)
+                        println("RIUSCITO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    } catch(all){
+                        println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+                    }
+            }
+        }
+
     }
 
     /*task primaAssembleDebug(){
@@ -142,6 +181,108 @@ android {
 //        //connectedAndroidTest.finalizedBy(':app:passReport')
 //        assembleDebugAndroidTest.finalizedBy(':app:passReport')
 //    }
+
+    task saluti(){
+        doLast {
+            println("ECCO I SALUTI DA FARE DOPO I UNIT TEST")
+        }
+    }
+
+    task ucoodeTest() {
+        def nomeapp = 'nome'
+
+        doLast {
+            project(':app') {
+                nomeapp = it.android.defaultConfig.applicationId
+                println "buildV:::: $nomeapp"
+            }
+        }
+        doLast {
+            try{
+                exec {
+                    //copia il file da emulatore a directory locale
+                    //commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                    commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', 'com.example.jsonreport.ExampleInstrumentedTest com.example.jsonreport.test/androidx.test.runner.AndroidJUnitRunner'//, '&&', 'adb', 'pull', 'sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json'
+                }
+                println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+                //e legge per verifica
+                String fileContents = new File('JsonTestReport.json').text
+                println(fileContents)
+            } catch(all){
+                println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+            }
+        }
+        doLast {
+            exec{
+                commandLine 'adb', 'pull', 'sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json'
+            }
+        }
+    }
+
+//    tasks.withType(connectedAndroidTest) { task ->
+//        task.finalizedBy(saluti)
+//    }
+//    tasks.getByPath(':app:assembleDebugAndroidTest') { task ->
+//        task.finalizedBy(saluti)
+//    }
+
+//    allprojects {
+//        tasks.whenTaskAdded { task ->
+//            if (task.class.simpleName == 'DefaultTask_Decorated') {
+//                //task.dependsOn doSomethingOnWhenBuildDebugCustom
+//                println " Here it is!!!! Type is  ${task.class.simpleName} !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+//                task.finalizedBy { println ("Ecchime") }
+//            } else {
+//                println " No!!! Type is not! but another one: ${task.class.simpleName} "
+//                task.finalizedBy { println ("not Ecchime") }
+//            }
+//
+//        }
+//    }
+
+    allprojects {
+//        tasks.whenTaskAdded { task ->
+//            task.finalizedBy {
+//                    try{
+//                        exec {
+//                            //copia il file da emulatore a directory locale
+//                            commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+//                        }
+//                        //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                        //e legge per verifica
+//                        //String fileContents = new File('JsonTestReport.json').text
+//                        //println(fileContents)
+//                        println("RIUSCITO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//                    } catch(all){
+//                        println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                    }
+//            }
+//        }
+
+        //tasks.whenObjectAdded { task -> task.finalizedBy{ println("AGGIUNTO OGGETTO!!!!!!!!!") } }
+
+//        tasks.whenTaskAdded { task ->
+//            if (task.class.simpleName == 'KotlinCompile_Decorated') {
+//                task.finalizedBy {
+//                    try{
+//                        exec {
+//                            //copia il file da emulatore a directory locale
+//                            commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+//                        }
+//                        //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                        //e legge per verifica
+//                        //String fileContents = new File('JsonTestReport.json').text
+//                        //println(fileContents)
+//                        println("RIUSCITO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//                    } catch(all){
+//                        println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+//                    }
+//            }
+//            }
+//        }
+    }
+
+
 }
 
 dependencies {

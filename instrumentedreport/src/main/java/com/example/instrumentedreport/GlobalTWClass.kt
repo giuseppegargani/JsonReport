@@ -34,6 +34,7 @@ open class GlobalTWClass {
         @AfterClass
         @JvmStatic
         fun afterClass() {
+            Thread.sleep(5000)
             createJson()
         }
 
