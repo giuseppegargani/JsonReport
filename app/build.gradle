@@ -2,6 +2,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'org.barfuin.gradle.taskinfo' version '1.0.5'
 }
 
 android {
@@ -38,8 +39,8 @@ android {
             println "The name of the test type: $connectedInstrumentTest.name"
             println "The type of test $connectedInstrumentTest.class"
         }
-//        connectedAndroidTest.finalizedBy(':app:passReport')
-        assembleDebugAndroidTest.finalizedBy(':app:passReport')
+        connectedAndroidTest.finalizedBy(':app:ucoodeTest')
+        assembleDebugAndroidTest.finalizedBy(':app:ucoodeTest')
         //assembleDebugAndroidTest.mustRunAfter(':app:passReport')
         tasks.getByPath(':instrumentedreport:passReport').mustRunAfter(':app:assembleDebugAndroidTest')
 //        assembleDebugAndroidTest.dependsOn(primaAssembleDebug)
@@ -68,6 +69,8 @@ android {
 //            }
 //        }
 
+
+
         tasks.whenTaskAdded { task ->
             task.finalizedBy {
                     try{
@@ -79,7 +82,7 @@ android {
                         //e legge per verifica
                         //String fileContents = new File('JsonTestReport.json').text
                         //println(fileContents)
-                        println("RIUSCITO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                        //println("RIUSCITO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                     } catch(all){
                         println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
                     }
@@ -128,7 +131,7 @@ android {
         doLast {
             project(':app') {
                 nomeapp = it.android.defaultConfig.applicationId
-                println "buildV:::: $nomeapp"
+                println "buildV:::: $nomeapp "
             }
         }
         /*doLast {
@@ -159,7 +162,9 @@ android {
             try{
                 exec {
                     //copia il file da emulatore a directory locale
-                    commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                    //commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                    commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', "${nomeapp}.ExampleInstrumentedTest", "${nomeapp}.test/androidx.test.runner.AndroidJUnitRunner" , '&&', 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json"
+
                 }
                 //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
                 //e legge per verifica
@@ -214,7 +219,7 @@ android {
         }
         doLast {
             exec{
-                commandLine 'adb', 'pull', 'sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json'
+                commandLine 'adb', 'pull', 'sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json', '../'
             }
         }
     }
@@ -240,7 +245,70 @@ android {
 //        }
 //    }
 
+    def cli = {
+        println("ECCOMI QUI")
+    }
+
+
     allprojects {
+//        tasks.withType(Test) { task ->
+//            task.finalizedBy {
+//                println ("QUELLO PRIMA ERA UN TIPO TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//            }
+//        }
+//        tasks.whenTaskAdded { task ->
+//            if (task == tasks.getByPath(':app:ucoodeTest')) {
+//                task.finalizedBy(saluti)
+//            }
+//        }
+//        tasks.getByPath(':app:ucoodeTest').finalizedBy(saluti)
+//        tasks.whenTaskAdded { task ->
+//            task.contains
+//        }
+//        tasks.contains('ExampleInstrumentedTest') { task ->
+//            task.finalizedBy {
+////                println ("QUELLO PRIMA ERA UN TIPO TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//                println("task che contiene la stringa!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+//            }
+//        }
+
+
+        task dentro() {
+            doLast {
+                //cli()
+                println("TIPO: ${ cli.class.simpleName }")
+            }
+        }
+        task testoinside() {
+            doLast {
+                cli()
+                println("TIPO: ${ cli.class.simpleName } dentro")
+                println("PROPRIETA': ${it } ")
+            }
+        }
+
+
+
+
+
+//        tasks.whenTaskAdded(cli) {
+//            println("AGGIUNTA TASK CON CLOSURE")
+//        }
+
+//        tasks.whenTaskAdded { task->
+//            if(task.contains(':app:cli')){
+//                println("CONTIENE !!!!!!!!!!!")
+//            }else { println("NON LO CONTIENE!!!!!!!!!!!!!!!")}
+//        }
+
+//        tasks.contains(cli) { task ->
+//            println("ecchilo")
+////            task.finalizedBy {
+//////                println ("QUELLO PRIMA ERA UN TIPO TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+////                println("task che contiene la stringa!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+////            }
+//        }
+
 //        tasks.whenTaskAdded { task ->
 //            task.finalizedBy {
 //                    try{
