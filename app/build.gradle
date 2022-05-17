@@ -36,8 +36,8 @@ android {
             println "The name of the test type: $connectedInstrumentTest.name"
             println "The type of test $connectedInstrumentTest.class"
         }
-        connectedAndroidTest.finalizedBy(':instrumentedreport:passReport')
-        assembleDebugAndroidTest.finalizedBy(':instrumentedreport:passReport')
+        connectedAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
+        assembleDebugAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
     }
 }
 

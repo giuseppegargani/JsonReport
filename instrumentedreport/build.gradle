@@ -41,9 +41,7 @@ android {
         jvmTarget = '1.8'
     }
 
-    //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
-    task passReport () {
-
+    task ucoodeTest() {
         def nomeapp = 'nome'
 
         doLast {
@@ -52,23 +50,58 @@ android {
                 println "buildV:::: $nomeapp"
             }
         }
-        //esegue il comando
-        //commandLine 'adb', 'shell', 'am', 'instrument', '-w', '-e', 'class', 'com.example.tests_vari.ExampleInstrumentedTest', 'com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner'//, '&&', 'adb', 'shell', 'cat', 'sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
-        //commandLine 'adb shell am instrument -w -e class com.example.tests_vari.ExampleInstrumentedTest com.example.tests_vari.test/androidx.test.runner.AndroidJUnitRunner && adb pull sdcard/android/data/com.example.tests_vari/files/giuseppe.txt'
-        //commandLine 'adb', 'pull', 'sdcard/android/data/com.example.reportroot/files/JsonTestReport.json', '../'
-        //parent.name
         doLast {
             try{
                 exec {
-                    //copia il file da emulatore a directory locale
+                    //we could also put in just one line: '&&', 'adb', 'pull', 'sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json'
+                    commandLine 'adb', 'shell', 'am', 'instrument', '-w', "${nomeapp}.test/androidx.test.runner.AndroidJUnitRunner"
+                }
+                //println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+                //e legge per verifica
+                //String fileContents = new File('JsonTestReport.json').text
+                //println(fileContents)
+            } catch(all){
+                println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+            }
+        }
+        doLast {
+            try{
+                exec{
                     commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
                 }
-                println("The PREVIOUS report has been correctly transfered and if you want to update the REPORT please retry this OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
-                //e legge per verifica
+                println("THE REPORT HAS BEEN TRANSFERED CORRECTLY")
                 String fileContents = new File('JsonTestReport.json').text
                 println(fileContents)
             } catch(all){
                 println("THE REPORT HAS NOT YET BEEN TRANSFERED SO PLEASE RETRY OR MANUALLY PASS THE FILE TO THE ROOT PROJECT FOLDER BY TERMINAL: gradlew passReport")
+            }
+
+        }
+    }
+
+    //VERIFICARE CHE TRASFERISCA PER DIVERSI COMANDI TEST STRUMENTALE, CON IF CONDIZIONALE (NON ERRORE) E SENZA ANDROIDJUNITRUNNER
+    task passReport () {
+
+        def nomeapp = 'nome'
+
+        doLast {
+            project(':app') {
+                nomeapp = it.android.defaultConfig.applicationId
+                println "The package name is: $nomeapp"
+            }
+        }
+        doLast {
+            try{
+                exec {
+                    //copy the file from emulator to root project folder
+                    commandLine 'adb', 'pull', "sdcard/android/data/${nomeapp}/files/JsonTestReport.json", '../'
+                }
+                println("The report has been correctly transfered to the root project folder")
+                //e legge per verifica
+                String fileContents = new File('JsonTestReport.json').text
+                println(fileContents)
+            } catch(all){
+                println("SOME PROBLEM HAS OCCURED WITH THE MANUAL TRANSFER OF REPORT: please inform us by email")
             }
         }
     }
