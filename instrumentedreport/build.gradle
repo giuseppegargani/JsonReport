@@ -7,6 +7,49 @@
     - CONCURRENCY IN GRADLE: https://docs.gradle.org/current/userguide/worker_api.html
         https://github.com/gradle/gradle/issues/7047
         THREADING: https://stackoverflow.com/questions/14370076/joining-thread-in-groovy
+
+    - messaggi di test in console: https://localcoder.org/gradle-how-to-get-output-from-test-stderr-stdout-into-console
+    - https://medium.com/@esycat/gradle-exec-output-f18f297c068
+    - Catturare l'output di una task e salvarlo su di un file:: https://discuss.gradle.org/t/how-do-i-grab-the-output-of-a-task-going-to-stdout-and-write-it-to-a-file/3441
+    - RIESEGUIRE I TEST!!!!!! : https://stackoverflow.com/questions/29427020/how-to-run-gradle-test-when-all-tests-are-up-to-date#:~:text=One%20option%20would%20be%20using,results%20before%20executing%20the%20tests.
+    - ESEGUIRE UN PROCESS DA CLASS https://stackoverflow.com/questions/50692829/adb-shell-command-from-android-app
+        possibili errori connessi con autorizzazioni (forse richiesto root!!!!)
+        https://stackoverflow.com/questions/54680553/cannot-run-program-adb-error-13-permission-denied
+        https://code-examples.net/it/q/467987
+      LANCIARE UNA LIBRERIA DA RIGA DI COMANDO: https://docs.microsoft.com/en-us/answers/questions/369506/android-problem-starting-the-program-from-the-shel.html
+      CONDIZIONI: https://localcoder.org/create-new-process-with-runtime-getruntime-in-android
+      ESEMPI: https://www.tabnine.com/code/java/methods/java.lang.Runtime/exec
+      DOCUMENTAZIONE UFFICIALE (SU PROCESS): https://developer.android.com/reference/java/lang/Process
+      OUTPUTSTREAMWRITER: https://www.programiz.com/java-programming/outputstreamwriter
+      https://developer.android.com/reference/java/io/OutputStreamWriter
+      PROCESSBUILDER: https://developer.android.com/reference/kotlin/java/lang/ProcessBuilder
+      https://developer.android.com/reference/kotlin/java/lang/Process  ufficiale!!!!!
+      ALTRA DOCUMENTAZIONE UFFICIALE: https://stackoverflow.com/questions/3643939/java-process-with-input-output-stream
+      articolo originario: https://stackoverflow.com/questions/65229137/how-to-write-adb-shell-commands-in-java
+      altro articolo interessante: https://stackoverflow.com/questions/20922600/execute-adb-command-from-java-program
+
+      CAMBIARE IL LIVELLO DELLA BATTERIA (linea di comando) adb -s DEVICE_ID shell dumpsys battery set level 5
+      INTERESSANTE!!!!!!!!https://www.swtestacademy.com/adb-commands-java-device-manipulation/
+
+      ANNOTAZIONI: https://stablekernel.com/article/the-10-step-guide-to-annotation-processing-in-android-studio/
+      DOCUMENTAZIONE UFFICIALE: https://developer.android.com/studio/write/annotations
+
+      ARTIFACTS: https://stackoverflow.com/questions/35571891/collect-build-artifacts-from-subprojects-into-rpm-with-gradle
+      https://stackoverflow.com/questions/60449365/how-to-use-custom-task-as-artifact
+
+      VEDERE E DEBUGGARE LE DIPENDENZE: https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html
+      https://stackoverflow.com/questions/39008887/how-do-i-show-dependencies-tree-in-android-studio
+
+      ENABLED: https://stackoverflow.com/questions/45451240/why-the-gradle-war-task-is-skipped
+
+      ROBOELECTRIC: https://proandroiddev.com/robolectric-testing-with-androidjunitrunner-86292bceef25
+
+      REPORT DI JRunner: https://stackoverflow.com/questions/33896315/how-to-retrieve-test-results-when-using-adb-shell-am-instrument
+
+      IMPORTANTI!!!!!!!!!!!
+      http://sorcersoft.org/project/site/gradle/userguide/multi_project_builds.html
+      https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:task_rules
+      https://www.groovy-lang.org/objectorientation.html
  */
 
 plugins {

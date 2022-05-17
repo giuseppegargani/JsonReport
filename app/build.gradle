@@ -272,23 +272,84 @@ android {
 //            }
 //        }
 
+//            tasks.withType(Exec) {
+////                doFirst {
+////                    println commandLine
+////                }
+//                doLast {
+//                    println ("DI TIPO EXEC")
+//                }
+//            }
 
-        task dentro() {
-            doLast {
-                //cli()
-                println("TIPO: ${ cli.class.simpleName }")
+
+//        task dentro() {
+//            doLast {
+//                //cli()
+//                println("TIPO: ${ cli.class.simpleName }")
+//            }
+//        }
+
+//        task testoinside() {
+//            doLast {
+//                cli()
+//                println("TIPO: ${ cli.class.simpleName } dentro")
+//                println("PROPRIETA': ${it } ")
+//            }
+//        }
+
+
+        //A questa viene passato un parametro:    ./gradlew myTask -PmyArg=hello
+        task myTask {
+            doFirst {
+                println myArg
+                println ("ECCO IL PARAMETRO PASSATO: $myArg")
+
+                //... do what you want
             }
         }
-        task testoinside() {
+//        tasks.whenTaskAdded { t->
+//            //println("I PARAMETRI PASSATI SONO: ${t.properties}")
+//            println("PARAMETRI:")
+//            //println t.args[0]
+//        }
+
+//        tasks.whenTaskAdded { task->
+//            //println("I PARAMETRI PASSATI SONO: ${t.properties}")
+//            //println("PARAMETRI:")
+//            //println t.args[0]
+////            tasks.withType(Exec){
+////                println("DI TIPO EXEC!!!!!")
+////            }
+//            if(task.)
+//        }
+
+        tasks.withType(Test) {
             doLast {
-                cli()
-                println("TIPO: ${ cli.class.simpleName } dentro")
-                println("PROPRIETA': ${it } ")
+
+                println("TASK DI TIPO TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!")
             }
         }
 
+        //print parameters
+        tasks.whenTaskAdded { task ->
+            //this.args.each{println it}
+
+//            if(task.hasProperty("args")){
+//                def argomenti = task.property("args")
+//                println("proprieta' passate $argomenti")
+//            } else {
+//                //println("NON HA PROPRIETA' ARGS")
+//            }
+            //println(args.size())
 
 
+//            println(args.size())
+//
+//            for (i = 0; i < args.size(); i++) {
+//                println(i + ' ' + args[i])
+//            }
+        }
+        //task().hasProperty(args)
 
 
 //        tasks.whenTaskAdded(cli) {
@@ -348,6 +409,15 @@ android {
 //            }
 //            }
 //        }
+//        tasks.whenTaskAdded {task ->
+//            println ("tipo :${task.class.simpleName}")
+//        }
+
+        tasks.withType(org.gradle.api.tasks.testing.Test) { t->
+            println("ECCO LA SCRITTA DENTRo WITHTYPE ${t}")
+            systemProperty 'host', 'DEV'
+
+        }
     }
 
 

@@ -34,7 +34,6 @@ open class GlobalTWClass {
             listaSingleTests = mutableListOf()
             //verifica se per caso esiste già un file json con i risultati
 //            globalTestObject = verifyPresence()
-//            DBExtracto.main()
         }
 
         //Si devono mettere come static!!!
@@ -42,19 +41,6 @@ open class GlobalTWClass {
         @JvmStatic
         fun afterClass() {
             createJson()
-            //DBExtracto.main()
-
-//            Log.d("giuseppecomando", "ENTRATO DENTRO CUSTOM CLASS")
-//            var processo:Process = Runtime.getRuntime().exec("adb shell ls")
-//            Log.d("giuseppecomando", "...e il comando $processo")
-//            try {
-//                process = Runtime.getRuntime().exec("adb shell ls")
-//                Log.d("giuseppecomando", "instanziato comando")
-//                println("instanziato un comando")
-//            }catch (exception: Exception) {
-//                Log.d("giuseppecomando", "NON instanziato comando")
-//                println("NON instanziato un comando")
-//            }
         }
 
         //if a globalTestReport already exists return a global file to the companion object corresponding variable
@@ -298,64 +284,3 @@ open class GlobalTWClass {
     @get:Rule
     public val watchman: TestRule? = SingleTestWatcher()
 }
-
-//public class DBExtract {
-//
-//    companion object {
-//        @Throws(IOException::class)
-//        @JvmStatic
-//        fun main(args: Array<String>) {
-//            var process = Runtime.getRuntime().exec("adb shell")
-//            PrintWriter(
-//                BufferedWriter(
-//                    OutputStreamWriter(process, getOutputStream(), StandardCharsets.UTF_8)
-//                )
-//            ).use { pw ->
-//                pw.println("run-as com.sk.shaft")
-//                pw.println("cd files")
-//                pw.println("cp file.db /sdcard/download/sample.db3")
-//                pw.println("exit")
-//                pw.println("exit")
-//            }
-//            process = Runtime.getRuntime()
-//                .exec("adb pull /sdcard/download/sample.db3 C:/users/libin/desktop/sample.db")
-//        }
-//    }
-//
-//}
-object DBExtracto {
-    @Throws(IOException::class)
-    @JvmStatic
-    fun main(/*args: Array<String>*/) {
-        Log.d("giuseppecomando", "ENTRATO DENTRO CUSTOM CLASS")
-        var process:Process? = null
-
-        try {
-            Runtime.getRuntime().exec("adb pull sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json")
-            process = Runtime.getRuntime().exec("adb pull sdcard/android/data/com.example.jsonreport/files/JsonTestReport.json")
-            Log.d("giuseppecomando", "instanziato comando")
-            println("instanziato un comando")
-        }catch (exception: Exception) {
-            Log.d("giuseppecomando", "NON instanziato comando $exception")
-            println("NON instanziato un comando")
-        }
-        PrintWriter(
-            BufferedWriter(
-                OutputStreamWriter(
-                    process?.getOutputStream(),
-                    StandardCharsets.UTF_8
-                )
-            )
-        ).use { pw ->
-            Log.d("giuseppecomando", "ENTRATO DENTRO CUSTOM CLASS2")
-            pw.println("ls")
-//            pw.println("run-as com.sk.shaft")
-//            pw.println("cd files")
-//            pw.println("cp file.db /sdcard/download/sample.db3")
-//            pw.println("exit")
-            pw.println("exit")
-        }
-        process = Runtime.getRuntime().exec("adb devices")
-    }
-}
-
