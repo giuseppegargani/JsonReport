@@ -123,4 +123,7 @@ dependencies {
 
     //Dependency to print e read JsonString and objects
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    //qui vanno le tre dipendenze di mockito (forse sarebbe meglio metterne solamente uno e la piu' importante per evitare conflitti)
+    implementation "org.mockito:mockito-core:3.+"
 }

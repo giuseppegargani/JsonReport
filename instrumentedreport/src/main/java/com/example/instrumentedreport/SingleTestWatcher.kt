@@ -21,7 +21,7 @@ open class SingleTestWatcher: TestWatcher() {
         val context= InstrumentationRegistry.getInstrumentation().targetContext
         val packName = context.packageName
         val localClassName = description?.className?.replace("$packName.", "")
-        Log.d("giuseppeNome", "nome classe test ${description?.className} package: $packName e classe filtrata $localClassName")
+        //Log.d("giuseppeNome", "nome classe test ${description?.className} package: $packName e classe filtrata $localClassName")
         GlobalTWClass.actualClass = localClassName!!
         GlobalTWClass.pckgDenomination = packName
     }
