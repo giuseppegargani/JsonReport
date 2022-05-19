@@ -9,6 +9,23 @@
         THREADING: https://stackoverflow.com/questions/14370076/joining-thread-in-groovy
  */
 
+/* SALVARE UNIT TESTS:
+    - CONFIGURAZIONE GRADLE PER Lettura Unit Test: https://stackoverflow.com/questions/29341744/android-studio-unit-testing-read-data-input-file
+    - MODO CORRETTO PER ACCEDERE AL CONTEXT : https://www.mo4tech.com/androidtest-the-correct-way-to-get-the-context.html
+        https://stackoverflow.com/questions/62312312/how-to-unit-test-a-class-that-uses-context
+    - APPLICATIONPROVIDER: https://developer.android.com/reference/androidx/test/core/app/ApplicationProvider
+        GetDir()
+        val appContext = ApplicationProvider.getApplicationContext<Context>()
+     ...e si puo' usare anche con annota AndroidJUnit4!!! sia con Instrumentation che con ApplicationProvider!!!
+
+     - Mockito.mock(Context::class)     https://stackoverflow.com/questions/34063848/how-to-mock-context-using-mockito
+
+     - VOGELLA interessante!!!!! Mockito https://www.vogella.com/tutorials/Mockito/article.html
+
+   SI DEVE VERIFICARE CHE SI POSSANO USARE MOCKITO O ALTRE ANNOTAZIONI NEL MODO CORRETTO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ */
+
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
@@ -126,4 +143,5 @@ dependencies {
 
     //qui vanno le tre dipendenze di mockito (forse sarebbe meglio metterne solamente uno e la piu' importante per evitare conflitti)
     implementation "org.mockito:mockito-core:3.+"
+    implementation 'org.robolectric:robolectric:4.8'
 }
