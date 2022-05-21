@@ -122,7 +122,50 @@ android {
             }
         }
     }
+
+    task peppe() {
+        //finalizedBy(':app:test')
+
+        configure {
+            testOptions {
+
+                //testOrchestrator
+                execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+                unitTests.all {
+
+                    afterTest { desc, result ->
+                        logger.lifecycle("************ Beppe: NOME TEST: $desc e RISULTATO TEST: $result")
+                    }
+                }
+            }
+
+        }
+
+        doFirst {
+            println("DoFIRST DI BEPPE")
+        }
+        doLast {
+            println("DOLAST DI BEPPE")
+        }
+    }
+
+    project.ext.callback = { c ->
+        println(c)
+    }
+
 }
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.task('hello') {
+            doLast {
+                println 'Hello from the GreetingPlugin'
+            }
+        }
+    }
+}
+
+
 
 dependencies {
 

@@ -4,7 +4,13 @@ plugins {
     id 'kotlin-android'
 }
 
+
 android {
+
+    // Apply the plugin
+    apply plugin: GreetingPlugin
+    //apply from: "${project(':instrumentedreport').projectDir}/GreetingPlugin"
+
     compileSdk 32
 
     defaultConfig {
@@ -38,8 +44,104 @@ android {
         }
         connectedAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
         assembleDebugAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
+        //tasks.getByPath(':instrumentedreport:ucoodeTest').finalizedBy(test)
+        //test.finalizedBy(':instrumentedreport:peppe')
+        //test.finalizedBy(':instrumentedreport:peppe')
+        //tasks.getByPath(':instrumentedreport:peppe').finalizedBy(test)
+        //test.dependsOn(':instrumentedreport:peppe')
+    }
+/*    project(':instrumentedreport') {
+        callback(':instrumentedreport:peppe')
+    }*/
+
+    tasks.register('configure') {
+        doLast {
+            def pos = new java.text.FieldPosition(10)
+            // Apply the script
+            apply from: 'annesso.gradle', to: pos
+            println pos.beginIndex
+            println pos.endIndex
+        }
+    }
+    tasks.register(':peppeprimo'){
+        doLast {
+            def x = 2
+            apply from: 'annesso.gradle', to: x
+            println("valore letto dal file ${x.beginIndex}")
+        }
+    }
+
+    //ma questo si puo' ulteriormente semplificare importando la task direttamente?
+    //SI POSSONO LEGGERE ANCHE DIVERSI FILE DI SCRIPT!!!!!!
+    task michele(){
+        doLast {
+            //apply from: '../instrumentedreport/other.gradle'
+            //apply from: "${project(':instrumentedreport').projectDir}/other.gradle"
+            //callback('a')
+            //primo()
+            //def docu = new java.text.FieldPosition(10)
+            apply from: 'annesso.gradle'//, to: docu
+            conf()
+            println beginIndex
+        }
+        doLast {
+            println("ESEGUITO DOPO")
+        }
+    }
+
+
+    //le due tasks peppe
+    /*task peppe() {
+        configure {
+            testOptions {
+
+            //testOrchestrator
+            execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+            unitTests.all {
+
+                afterTest { desc, result ->
+                    logger.lifecycle("************ Beppe: NOME TEST: $desc e RISULTATO TEST: $result")
+                }
+            }
+        }
+
+        }
+
+        doFirst {
+            println("DoFIRST DI BEPPE")
+        }
+        doLast {
+            println("DOLAST DI BEPPE")
+        }
+    }*/
+
+    /*peppe {
+        testOptions {
+
+            //testOrchestrator
+            execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+            unitTests.all {
+
+                afterTest { desc, result ->
+                    logger.lifecycle("************ Beppe: NOME TEST: $desc e RISULTATO TEST: $result")
+                }
+            }
+        }
+    }*/
+
+}
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.task('hello') {
+            doLast {
+                println 'Hello from the GreetingPlugin'
+            }
+        }
     }
 }
+
 
 dependencies {
 
