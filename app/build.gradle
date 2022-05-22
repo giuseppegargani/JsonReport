@@ -3,11 +3,13 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
 }
+//applica il plugin
+apply plugin: GreetingPlugin
 
 android {
     compileSdk 32
 
-    defaultConfig {
+    /*defaultConfig {
         applicationId "com.example.jsonreport"
         minSdk 24
         targetSdk 32
@@ -15,7 +17,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+    }*/
 
     buildTypes {
         release {
@@ -31,13 +33,89 @@ android {
         jvmTarget = '1.8'
     }
 
-    testVariants.all { variant ->
+    /*testVariants.all { variant ->
         variant.connectedInstrumentTest.doLast {
             println "The name of the test type: $connectedInstrumentTest.name"
             println "The type of test $connectedInstrumentTest.class"
         }
         connectedAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
         assembleDebugAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
+    }*/
+}
+
+class GreetingPlugin implements Plugin<Project> {
+
+    void apply(Project project) {
+        project.android {
+
+            defaultConfig {
+                applicationId "com.example.jsonreport"
+                minSdk 24
+                targetSdk 32
+                versionCode 1
+                versionName "1.0"
+
+                testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+            }
+
+            testVariants.all { variant ->
+                variant.connectedInstrumentTest.doLast {
+                    println "The name of the test type: $connectedInstrumentTest.name"
+                    println "The type of test $connectedInstrumentTest.class"
+                }
+                project.connectedAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
+                project.assembleDebugAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
+            }
+
+            testOptions {
+
+                //testOrchestrator
+                execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+                unitTests.all {
+
+                    ignoreFailures = true
+
+                    beforeTest { descriptor ->
+                        logger.lifecycle("Beppe Running test: " + descriptor)
+                    }
+                     afterTest { desc, result ->
+                        logger.lifecycle("************ Beppe: NOME TEST: $desc e RISULTATO TEST: $result")
+                    }
+
+                    beforeSuite { desc ->
+                        println("Si mette in ascolto $desc")
+                    }
+                    afterSuite { desc, result ->
+                        if (!desc.parent) { // will match the outermost suite
+                            def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} passed, ${result.failedTestCount} failed, ${result.skippedTestCount} skipped)"
+                            def startItem = '|  ', endItem = '  |'
+                            def repeatLength = startItem.length() + output.length() + endItem.length()
+                            println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+                        }
+                    }
+                    //granularità in console dei risultati del test (verificato e 3 corrisponde al singolo metodo)
+                    testLogging {
+                        minGranularity 3
+                        maxGranularity 3
+                    }
+                    onOutput { descriptor, event ->
+                        logger.lifecycle("Beppe Test: " + descriptor + " produced standard out/err: " + event.message )
+                    }
+
+
+                }
+
+
+            }
+        }
+
+
+        project.task('hello') {
+            doLast {
+                println "${extension.message.get()} from ${extension.greeter.get()}"
+            }
+        }
     }
 }
 
