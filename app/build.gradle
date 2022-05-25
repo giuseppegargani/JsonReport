@@ -2,10 +2,14 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.barsali.plugin.greeting'
 }
 
 android {
     compileSdk 32
+
+    //si applica il plugin direttamente dentro
+    //apply plugin: 'com.barsali.plugin.greeting'
 
     defaultConfig {
         applicationId "com.example.jsonreport"
@@ -31,14 +35,14 @@ android {
         jvmTarget = '1.8'
     }
 
-    testVariants.all { variant ->
+    /*testVariants.all { variant ->
         variant.connectedInstrumentTest.doLast {
             println "The name of the test type: $connectedInstrumentTest.name"
             println "The type of test $connectedInstrumentTest.class"
         }
         connectedAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
         assembleDebugAndroidTest.finalizedBy(':instrumentedreport:ucoodeTest')
-    }
+    }*/
 }
 
 dependencies {
