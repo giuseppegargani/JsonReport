@@ -2,9 +2,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.barsali.file-diff' version '0.0.1-SNAPSHOT'
 }
 //applica il plugin
-apply plugin: GreetingPlugin
+//apply plugin: GreetingPlugin
+//apply from: "${project(':instrumentedreport').projectDir}/other.gradle"
+//apply plugin: TestPlugin
 
 android {
     compileSdk 32
@@ -43,7 +46,14 @@ android {
     }*/
 }
 
-class GreetingPlugin implements Plugin<Project> {
+fileDiff {
+
+    file1 = file('app/libs/diff-util-0.0.1-SNAPSHOT.jar')
+    file2 = file('app/libs/diff-util-0.0.1-SNAPSHOT.jar')
+
+}
+
+/*class GreetingPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.android {
@@ -117,7 +127,7 @@ class GreetingPlugin implements Plugin<Project> {
             }
         }
     }
-}
+}*/
 
 dependencies {
 

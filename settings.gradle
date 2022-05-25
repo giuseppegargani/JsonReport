@@ -3,9 +3,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        //per caricamento artifactId locale per plugin
+        mavenLocal()
+        gradlePluginPortal()
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
+
 rootProject.name = "JsonReport"
 include ':app'
 include ':instrumentedreport'
