@@ -50,6 +50,30 @@
       http://sorcersoft.org/project/site/gradle/userguide/multi_project_builds.html
       https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:task_rules
       https://www.groovy-lang.org/objectorientation.html
+
+      - TRASFORMARE UNO SCRIPT GRADLE IN UN PLUGIN BINARY
+      https://stackoverflow.com/questions/49711846/how-to-turn-a-gradle-script-plugin-into-a-binary-plugin
+
+      - Differenza tra Apply From e Apply Plugin: https://stackoverflow.com/questions/29378249/difference-apply-from-vs-apply-plugin
+
+      - Plugin per verifica dipendenze :https://github.com/dependency-check/dependency-check-gradle
+
+      - FLATDIR:  per caricamento da file locale https://stackoverflow.com/questions/37250493/could-not-find-method-android-for-arguments
+
+      - Caricamento da cartellina lib: https://stackoverflow.com/questions/65974393/how-to-add-a-library-to-gradle-build-in-android-studio-project
+
+      - Creare un plugin di base per ANDROID: https://proandroiddev.com/write-an-android-studio-plugin-part-1-creating-a-basic-plugin-af956c4f8b50
+
+      - VERIFICA PERCORSO SCR/GROOVY/MAIN oopure JAva !!!!!!!!!!!!!!!!!!!!!!
+
+      - DISABILITARE LINT PER UNA DIRECTORY: https://proandroiddev.com/write-an-android-studio-plugin-part-1-creating-a-basic-plugin-af956c4f8b50
+
+      - @SuppressLint   in Kotlin!!!! http://googlesamples.github.io/android-custom-lint-rules/usage/suppressing.md.html#:~:text=To%20suppress%20a%20lint%20warning,instance%20you%20want%20to%20disable.
+
+      - CATTURARE AROOMENTI DI UNO SCRIPT https://stackoverflow.com/questions/6367384/how-to-capture-arguments-passed-to-a-groovy-script
+
+      - INTRODUZIONE A SCRIVERE UN PLUGIN GRADLE!!!! https://tomgregory.com/introduction-to-gradle-plugins/
+
  */
 
 plugins {
