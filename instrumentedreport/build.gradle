@@ -107,7 +107,7 @@ android {
     }
 }
 
-class GreetingPlugin implements Plugin<Project> {
+/*class GreetingPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.android {
@@ -181,7 +181,7 @@ class GreetingPlugin implements Plugin<Project> {
             }
         }
     }
-}
+}*/
 
 dependencies {
 

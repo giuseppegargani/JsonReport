@@ -2,17 +2,31 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'com.barsali.file-diff' version '0.0.1-SNAPSHOT'
+    //id 'com.barsali.file-diff' version '0.0.1-SNAPSHOT'
+    //id 'com.barsali.plugin.greeting' version '0.23'
 }
 //applica il plugin
 //apply plugin: GreetingPlugin
 //apply from: "${project(':instrumentedreport').projectDir}/other.gradle"
 //apply plugin: TestPlugin
 
+//apply from: project(':instrumentedreport').projectDir.getPath() + "/other.gradle"
+//apply plugin: TestPlugin
+//apply from: project(':app').projectDir.getPath() + "/annesso.gradle"
+
 android {
+    //apply plugin: 'com.barsali.plugin.greeting' version '0.23'
+
+    //apply plugin: FileDiffPlugin
+    //apply plugin: GreetingPlug
+    //apply plugin: 'com.barsali.plugin.greeting' version '0.23'
+
+    //messo dentro android
+    apply plugin: 'com.barsali.plugin.greeting'
+
     compileSdk 32
 
-    /*defaultConfig {
+    defaultConfig {
         applicationId "com.example.jsonreport"
         minSdk 24
         targetSdk 32
@@ -20,7 +34,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }*/
+    }
 
     buildTypes {
         release {
@@ -46,12 +60,12 @@ android {
     }*/
 }
 
-fileDiff {
+/*fileDiff {
 
     file1 = file('app/libs/diff-util-0.0.1-SNAPSHOT.jar')
-    file2 = file('app/libs/diff-util-0.0.1-SNAPSHOT.jar')
+    file2 = file('app/libs/diff-util-0.0.1-SNAPSHOT2.jar')
 
-}
+}*/
 
 /*class GreetingPlugin implements Plugin<Project> {
 
@@ -140,4 +154,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation project(':instrumentedreport')
+    //dipendenza locale
+    //implementation files('libs/greeting-plugin-0.23.jar')
+    //implementation  (name:'greeting-plugin-0.23', ext:'jar')
 }
