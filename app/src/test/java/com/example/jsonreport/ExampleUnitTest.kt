@@ -3,6 +3,7 @@ package com.example.jsonreport
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Ignore
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,7 +12,28 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
+    fun addition_isCorrect1() {
+        assertEquals(4, 2 + 2)
+    }
+
+    @Test
+    fun addition_isCorrect2() {
+        assertEquals(4, 2 + 2)
+    }
+
+    @Test
+    fun addition_isCorrect3() {
+        assertEquals(4, 2 + 2)
+    }
+
+    //@Ignore
+    @Test
+    fun addition_isCorrect4() {
+        assertEquals(4, 2 + 2)
+    }
+
+    @Test
+    fun addition_isCorrect5() {
         assertEquals(4, 2 + 2)
     }
 }

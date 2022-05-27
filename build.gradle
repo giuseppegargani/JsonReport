@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.barsali.plugin.greeting' version '0.25' apply false
+    id 'com.barsali.plugin.greeting' version '0.32' apply false
 }
 task clean(type: Delete) {
     delete rootProject.buildDir
