@@ -1,5 +1,6 @@
 package com.example.instrumentedreport
 
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.AssumptionViolatedException
 import org.junit.rules.TestWatcher
@@ -10,7 +11,11 @@ import org.junit.runner.Description
         println("nuovo TESTWATCHER!!!!!!!!!!!!!!! ${description} ha avuto successo e nome classe ${description?.className}")
  */
 
-open class SingleTestWatcher: TestWatcher() {
+open class SingleTestWatcher(var customSuccessWord: String = TestResultStatus.SUCCESS.toString(), var customFailureWord: String = TestResultStatus.SUCCESS.toString()): TestWatcher() {
+
+    init {
+        Log.d("giuseppeCustom", " INIT customSuccessWord $customSuccessWord e $customFailureWord")
+    }
 
     override fun starting(description: Description?) {
         super.starting(description)
@@ -26,13 +31,14 @@ open class SingleTestWatcher: TestWatcher() {
 
     override fun succeeded(description: Description?) {
         super.succeeded(description)
-        val singleTest = description?.let { SingleTest(it.methodName!!, TestResultStatus.SUCCESS) }
+        Log.d("giuseppeCustom", " customSuccessWord $customSuccessWord")
+        val singleTest = description?.let { SingleTest(it.methodName!!, customSuccessWord) }
         GlobalTWClass.addSingleTest(singleTest!!)
     }
 
     override fun failed(e: Throwable?, description: Description?) {
         super.failed(e, description)
-        val singleTest = description?.let { SingleTest(it.methodName!!, TestResultStatus.FAILURE/*, e.toString()*/) }
+        val singleTest = description?.let { SingleTest(it.methodName!!, customFailureWord /*, e.toString()*/) }
         GlobalTWClass.addSingleTest(singleTest!!)
     }
 

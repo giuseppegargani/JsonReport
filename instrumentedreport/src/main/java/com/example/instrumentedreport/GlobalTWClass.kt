@@ -124,7 +124,11 @@ import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
 
-open class GlobalTWClass() {
+open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.toString(), var customFailure: String = TestResultStatus.FAILURE.toString()) {
+
+    init {
+        Log.d("giuseppeCustom", " INIT Global customSuccessWord $customSuccess e $customFailure")
+    }
 
     //because some methods are static
     companion object {
@@ -132,12 +136,6 @@ open class GlobalTWClass() {
         //queste sono le variabili custom
         var customPath = ""
         var customName = "JsonTestReport"
-        var customSuccess: String = TestResultStatus.SUCCESS.toString()
-        var customFailure: String = TestResultStatus.FAILURE.toString()
-
-        fun chiamaSenza() {
-            Log.d("giuseppeCostruttore", "CHIAMATO METODO da companion nome: $customName")
-        }
 
         //variabile della lista dei singoli tests (data class SingleTest)
         var listaSingleTests = mutableListOf<SingleTest>()
@@ -268,6 +266,6 @@ open class GlobalTWClass() {
     }
 
     @get:Rule
-    public val watchman: TestRule? = SingleTestWatcher()
+    public val watchman: TestRule? = SingleTestWatcher(customSuccess, customFailure)
 
 }

@@ -16,7 +16,7 @@ import org.junit.Ignore
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest: GlobalTWClass() {
+class ExampleInstrumentedTest: GlobalTWClass("Successo", "Fallimento") {
 
     //Optional configuration block
     init {
