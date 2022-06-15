@@ -9,6 +9,6 @@ data class SingleClass(var test_class_name:String,  var tests_list: MutableList<
 data class SingleTest ( var testName: String, var outcome: TestResultStatus, var otherData: String? = null )
 
 enum class TestResultStatus {
-    SUCCESSFUL, ABORTED, FAILED, DISABLED
+    SUCCESS, ABORTED, FAILURE, SKIPPED
 }
 

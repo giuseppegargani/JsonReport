@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import org.junit.Ignore
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -28,9 +29,10 @@ class ExampleInstrumentedTest: GlobalTWClass() {
     fun useAppContext2() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.jsonreport", appContext.packageName)
+        assertEquals("com.example.jsonrepor", appContext.packageName)
     }
 
+    @Ignore
     @Test
     fun useAppContext3() {
         // Context of the app under test.
