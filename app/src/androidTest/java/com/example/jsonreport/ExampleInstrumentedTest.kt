@@ -18,6 +18,12 @@ import org.junit.Ignore
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest: GlobalTWClass() {
 
+    //Optional configuration block
+    init {
+        customName = "beppeReportJson"
+        customPath = "/reports"
+    }
+
     @Test
     fun useAppContext() {
         // Context of the app under test.

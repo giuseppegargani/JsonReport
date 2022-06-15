@@ -112,6 +112,7 @@ package com.example.instrumentedreport
 
  */
 
+import android.content.Context
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
@@ -120,11 +121,23 @@ import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.rules.TestRule
 import java.io.*
+import java.nio.file.Files
+import java.nio.file.Paths
 
-open class GlobalTWClass {
+open class GlobalTWClass() {
 
     //because some methods are static
     companion object {
+
+        //queste sono le variabili custom
+        var customPath = ""
+        var customName = "JsonTestReport"
+        var customSuccess: String = TestResultStatus.SUCCESS.toString()
+        var customFailure: String = TestResultStatus.FAILURE.toString()
+
+        fun chiamaSenza() {
+            Log.d("giuseppeCostruttore", "CHIAMATO METODO da companion nome: $customName")
+        }
 
         //variabile della lista dei singoli tests (data class SingleTest)
         var listaSingleTests = mutableListOf<SingleTest>()
@@ -138,6 +151,7 @@ open class GlobalTWClass {
         @JvmStatic
         fun beforeClass(){
             //Log.d("giuseppeCheck", "valore di globalTestObject $globalTestObject")
+            //Log.d("giuseppeCostruttore", "Costruttore secondario e'")
             listaSingleTests = mutableListOf()
 
             //verifica se per caso esiste già un file json con i risultati
@@ -158,9 +172,13 @@ open class GlobalTWClass {
 
             //check if exists already a file
             val context= InstrumentationRegistry.getInstrumentation().targetContext
-            val path: File = context.getExternalFilesDir(null)!!
+
+            //val path: File = context.getExternalFilesDir(null)!!
+            //val path: File = File(context.getExternalFilesDir(null)!!.toString()+ customPath)
+            val path: File = File(context.getExternalFilesDir(null)!!.toString()+customPath)
+
             //we'll be able to change the fileName
-            val file = File(path, "JsonTestReport.json")
+            val file = File(path, "$customName.json")
 
             if(file.exists()){
                 //if exists assign to the global variable
@@ -183,8 +201,13 @@ open class GlobalTWClass {
 
             //verifica se esiste o meno
             val context= InstrumentationRegistry.getInstrumentation().targetContext
-            val path: File = context.getExternalFilesDir(null)!!
-            val file = File(path, "JsonTestReport.json")
+            //val path: File = context.getExternalFilesDir(null)!!
+
+            val path: File = File(context.getExternalFilesDir(null)!!.toString()+customPath)
+            if(!path.exists()) { path.mkdir()}
+
+            Log.d("giuseppeFile", "path $path")
+            val file = File(path, "$customName.json")
 
             //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
             if(globalTestObject==null) {
@@ -246,4 +269,5 @@ open class GlobalTWClass {
 
     @get:Rule
     public val watchman: TestRule? = SingleTestWatcher()
+
 }
