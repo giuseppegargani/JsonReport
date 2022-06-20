@@ -12,3 +12,4 @@ enum class TestResultStatus {
     SUCCESS, ABORTED, FAILURE, SKIPPED
 }
 
+
