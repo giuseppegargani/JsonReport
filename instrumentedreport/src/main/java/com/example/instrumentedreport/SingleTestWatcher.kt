@@ -32,13 +32,16 @@ open class SingleTestWatcher(var customSuccessWord: String = TestResultStatus.SU
     override fun succeeded(description: Description?) {
         super.succeeded(description)
         Log.d("giuseppeCustom", " customSuccessWord $customSuccessWord")
-        val singleTest = description?.let { SingleTest(it.methodName!!, customSuccessWord) }
+        //val singleTest = description?.let { SingleTest(it.methodName!!, customSuccessWord) }
+        val singleTest = description?.let { SingleTest("Nome del test", it.methodName!!, "Risultato", customSuccessWord).rendiMappa()}
         GlobalTWClass.addSingleTest(singleTest!!)
     }
 
     override fun failed(e: Throwable?, description: Description?) {
         super.failed(e, description)
-        val singleTest = description?.let { SingleTest(it.methodName!!, customFailureWord /*, e.toString()*/) }
+        //val singleTest = description?.let { SingleTest(it.methodName!!, customFailureWord /*, e.toString()*/) }
+        val singleTest: Map<String, String>? = description?.let {
+            SingleTest("Nome del test", it.methodName!!, "Risultato", customFailureWord).rendiMappa() }
         GlobalTWClass.addSingleTest(singleTest!!)
     }
 

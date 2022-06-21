@@ -138,7 +138,7 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         var customName = "JsonTestReport"
 
         //variabile della lista dei singoli tests (data class SingleTest)
-        var listaSingleTests = mutableListOf<SingleTest>()
+        var listaSingleTests = mutableListOf<Map<String, String>>()
         //questo e' l'oggetto che viene letto (se il file e' gia' presente)
         var globalTestObject: CompositeTestClass? = null
 
@@ -188,7 +188,7 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //add singleTest to the local list!!!!
-        fun addSingleTest(singleTest: SingleTest){
+        fun addSingleTest(singleTest: Map<String,String>){
             listaSingleTests.add(singleTest)
         }
 
@@ -209,7 +209,7 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
 
             //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
             if(globalTestObject==null) {
-                val actualTestClass = SingleClass(actualClass,listaSingleTests)
+                val actualTestClass = SingleClass("NomeClasse", actualClass, "Tests List", listaSingleTests)
                 actualGlobalClass = CompositeTestClass(pckgDenomination, mutableListOf(actualTestClass))
                 Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
             }

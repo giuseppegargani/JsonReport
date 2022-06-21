@@ -10,10 +10,29 @@ const val eccomi = "campo"
 
 data class CompositeTestClass (var package_name:String, var test_classes_list: MutableList<SingleClass>)
 
-data class SingleClass( var test_class_name:String,  var tests_list: MutableList<SingleTest>)
+//data class SingleClass( var test_class_name:String,  var tests_list: MutableList<Map<String, String>>)
+
+//Verifica in ingresso i tipi dei parametri!!! (tra cui lista di mappe Stringa, Stringa)
+class SingleClass ( val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<Map<String,String>> ) {
+
+    fun rendiMappa(): Map<Any, Any> {
+        val listaFinale = mapOf<Any,Any>(nameClassKey to nameClassValue, eventsTestKey to eventsTestValue )
+        return listaFinale
+    }
+}
 
 @Serializable
-data class SingleTest (@SerializedName(eccomi) var testName: String, @SerializedName("Risultato") var outcome: String, var otherData: String? = null )
+//data class SingleTest (@SerializedName(eccomi) var testName: String, @SerializedName("Risultato") var outcome: String, var otherData: String? = null )
+
+//Corrispondente al singolo test e customizabile e il metodo restituisce una mappa (per json)
+//verifica di tipo dei parametri (PARAGONE NON NECESSARIO tra elementi)
+class SingleTest ( val nameTestKey: String = "Test Name", val nameTestValue: String, val eventTestKey: String = "Outcome", val eventTestValue: String  /* AGGIUNTA ALTRI DATI*/  ) {
+
+    fun rendiMappa(): Map<String, String>  {
+        val listaFinale = mapOf<String, String>(nameTestKey to nameTestValue, eventTestKey to eventTestValue)
+        return listaFinale
+    }
+}
 
 enum class TestResultStatus {
     SUCCESS, ABORTED, FAILURE, SKIPPED
