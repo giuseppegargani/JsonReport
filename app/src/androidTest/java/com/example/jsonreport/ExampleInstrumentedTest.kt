@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import org.junit.BeforeClass
 import org.junit.Ignore
 
 /**
@@ -20,9 +21,10 @@ class ExampleInstrumentedTest: GlobalTWClass("Successo", "Fallimento") {
 
     //Optional configuration block
     init {
-        customName = "beppeReportJson"
-        customPath = "/documenti"
+        customName = "BeppeReport"
+        customPath = "/Documenti"
     }
+
 
     @Test
     fun useAppContext() {
@@ -35,7 +37,7 @@ class ExampleInstrumentedTest: GlobalTWClass("Successo", "Fallimento") {
     fun useAppContext2() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.jsonreport", appContext.packageName)
+        assertEquals("com.example.jsonrepor", appContext.packageName)
     }
 
     @Ignore

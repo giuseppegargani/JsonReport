@@ -8,7 +8,9 @@ import kotlinx.serialization.Serializable
 
 const val eccomi = "campo"
 
-//val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<Map<String,String>>
+data class CompositeTestClass ()
+
+/*//val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<Map<String,String>>
 data class CompositeTestClass (var packageNameKey: String = "Package Name",  var packageNameValue:String, var classesListKey: String = "test classes list", var classesListValue: MutableList<LinkedHashMap<Any, Any>>){
 
     fun rendiMappa(): LinkedHashMap<Any, Any> {
@@ -34,13 +36,13 @@ class SingleClass ( val nameClassKey: String = "Class Name", val nameClassValue:
 
 //Corrispondente al singolo test e customizabile e il metodo restituisce una mappa (per json)
 //verifica di tipo dei parametri (PARAGONE NON NECESSARIO tra elementi)
-class SingleTest ( val nameTestKey: String = "Test Name", val nameTestValue: String, val eventTestKey: String = "Outcome", val eventTestValue: String  /* AGGIUNTA ALTRI DATI*/  ) {
+class SingleTest ( val nameTestKey: String = "Test Name", val nameTestValue: String, val eventTestKey: String = "Outcome", val eventTestValue: String  *//* AGGIUNTA ALTRI DATI*//*  ) {
 
     fun rendiMappa(): LinkedHashMap<String, String>  {
         val listaFinale = linkedMapOf<String, String>(nameTestKey to nameTestValue, eventTestKey to eventTestValue)
         return listaFinale
     }
-}
+}*/
 
 enum class TestResultStatus {
     SUCCESS, ABORTED, FAILURE, SKIPPED

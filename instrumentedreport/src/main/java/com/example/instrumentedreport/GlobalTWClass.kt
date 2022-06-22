@@ -121,6 +121,7 @@ import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
 import org.junit.AfterClass
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.rules.TestRule
@@ -149,14 +150,17 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         var pckgDenomination: String = ""
         var actualClass: String = ""
 
+        //ad inizio di ogni test si inzializza la variabile con la lista dei singoli tests (svuotandoli)
         @BeforeClass
         @JvmStatic
         fun beforeClass(){
+            Log.d("giuseppeDyn2", "lettura dei parametri in entrata $customPath e $customName")
             listaSingleTests = mutableListOf()
-            //verifica se per caso esiste già un file json con i risultati (VERIFICA E PRENDE IL VALORE)
-            //Se NON ESISTE GIA' il suo valore sara' null!!!!! NULLABLE  (un primo controllo) ma ci vogliono altri controlli aggiunti SULLA STRUTTURA!!
-            globalTestObject = verifyPresence()
+            /*verifica se per caso esiste già un file json con i risultati (VERIFICA E PRENDE IL VALORE)
+            Se NON ESISTE GIA' il suo valore sara' null!!!!! NULLABLE  (un primo controllo) ma ci vogliono altri controlli aggiunti SULLA STRUTTURA!!*/
+            //globalTestObject = verifyPresence()
 
+            //MESSO PER DEBUG (togliere)
             /*globalTestObject?.let {
                 //verifica che puo' leggere il valore di alcuni campi (LE SEGUENTI RIGHE SONO SOLO PER IL DEBUG!!) Deserializzazione!!!
                 Log.d("giuseppeDyn", "ELENCOCLASSI prima di conversione ${globalTestObject!!.getValue("Test Classes")}")
@@ -168,14 +172,17 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             }*/
         }
 
-        //Si devono mettere come static!!!
+        //Inizializza globalTestObject!!!! leggendo dal file se esiste e poi provvede a modificarlo (in questo momento si conosce il valore della classe del test attuale)
         @AfterClass
         @JvmStatic
         fun afterClass() {
+            Log.d("giuseppeDyn2", "lettura dei parametri in uscita $customPath e $customName")
+            globalTestObject = verifyPresence()
             createJson()
         }
 
-        /*if a globalTestReport already exists return a global file to the companion object corresponding variable
+        /*
+        if a globalTestReport already exists return a global file to the companion object corresponding variable
         se il file esiste lo carica come oggetto (per modificarlo)
         Restituisce una mappa di Any!!!!!!!
         Viene lanciato prima della classe dei test HASHMAP*/
@@ -230,6 +237,8 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
             //se null vuol dire che non esisteva prima e quindi si crea velocemente!!! come classeo anche senza classe
             //
+
+            //Se oggetto null perche' file non presente!!!
             if(globalTestObject==null) {
                 //si puo' anche eliminare e fare direttamente una mappa (con valori CUSTOM)
                     //e in questo caso nella classe si controllano alcuni tipi (in entrata)
@@ -239,6 +248,8 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                 //actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", mutableListOf(actualTestClass)).rendiMappa()
                 Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
             }
+
+            //se esiste un file
             else {
                 Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
                 //check if the test class already exists (otherwise simply add)
@@ -246,8 +257,8 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                 //COME ERA PRIMA!!!!! direttamente!!!!
                 //val elencoClassi: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
 
-
                 //Gson().fromJson<LinkedHashMap<Any, Any>>(it, LinkedHashMap::class.java)
+
                 val elencoCl: MutableList<Any> = globalTestObject!!.getValue("Test Classes") as MutableList<Any>
                 val listaNuova = mutableListOf<LinkedHashMap<Any,Any>>()
                     elencoCl.forEach { cl->
@@ -259,16 +270,26 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                 val listaClassi: MutableList<Any> = globalTestObject!!.getValue("Test Classes") as MutableList<Any>
                 //val listaClassiDef: MutableList<LinkedHashMap<Any,Any>> = listaClassi.forEach { cl-> cl as LinkedHashMap<Any,Any> }
 
-                Log.d("beppe", "numero elenco classi ${elencoClassi.size} e $elencoClassi")
+                Log.d("giuseppeFile", "numero elenco classi ${elencoClassi.size} e $elencoClassi")
                 //se la lista delle classi e' maggiore di zero (debugabile come size) e per ognuna verifica il nome della classe
-                Log.d("beppe", "primo elemento classe ${elencoClassi[0]}")
+                Log.d("giuseppeFile", "primo elemento classe ${elencoClassi[0]}")
                 /*for (i in 0..elencoClassi.size) {
                     Log.d("beppe", "VALORE DENTRO ${elencoClassi[i].getValue("NomeClasse")}")
                 }*/
+
+                elencoClassi.forEach { cl->
+                    val nomeClasse:String = cl.getValue("Nome Classe") as String
+                    Log.d("giuseppeDyn", "NOME DI OGNUNA DELLE CLASSI $nomeClasse")
+                }
+
+                //Verifica che esista (ANY: Booleano!!!!) nell'elenco delle Classi la classe corrispondente (non da' elenco ma booleano)
+                if(elencoClassi.any { cl-> cl.getValue("Nome Classe")== actualClass }) { Log.d("giuseppeDyn", "LA CLASSE ESISTE GIA'")}
+                else {Log.d("giuseppeDyn", "LA CLASSE NON ESISTE GIA'") }
+
                 //vediamo se si puo' sostituire con forEach!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 for (i in 0..elencoClassi.size) {
                     Log.d("beppe", "DENTRO CONDIZIONE CUSTOM")
-                    if(elencoClassi[i].getValue("NomeClasse")== actualClass) { Log.d("giuseppeDyn", "Corrisponde alla classe beppe ${actualClass} e il valore ${elencoClassi[i].getValue("Tests List")}")
+                    if(elencoClassi[i].getValue("Nome Classe")== actualClass) { Log.d("giuseppeDyn", "Corrisponde alla classe beppe ${actualClass} e il valore ${elencoClassi[i].getValue("Tests List")}")
                         //cl.getValue("Tests List") = listaSingleTests
                         elencoClassi[i]["Test List"] = listaSingleTests
                     }

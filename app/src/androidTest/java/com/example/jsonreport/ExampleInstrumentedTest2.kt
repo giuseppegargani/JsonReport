@@ -10,6 +10,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest2: GlobalTWClass() {
 
+    init {
+        customName = "JsonTestReport"
+        customPath = ""
+    }
+
     @Test
     fun useAppContext() {
         // Context of the app under test.

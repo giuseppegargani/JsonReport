@@ -45,19 +45,17 @@ open class SingleTestWatcher(var customSuccessWord: String = TestResultStatus.SU
     override fun succeeded(description: Description?) {
         super.succeeded(description)
         Log.d("giuseppeCustom", " customSuccessWord $customSuccessWord")
-        //val singleTest = description?.let { SingleTest(it.methodName!!, customSuccessWord) }
-        val singleTest: LinkedHashMap<String, String>? = description?.let { SingleTest("Nome del test", it.methodName!!, "Risultato", customSuccessWord).rendiMappa()}
-        val singleObject = JSONObject()
-        //json.putAll( data );
-        //singleObject.put( )
+        //val singleTest: LinkedHashMap<String, String>? = description?.let { SingleTest("Nome del test", it.methodName!!, "Risultato", customSuccessWord).rendiMappa()}
+        val singleTest: LinkedHashMap<String, String>? = description?.let { linkedMapOf("Nome del Test" to it.methodName!!, "Risultato" to customSuccessWord) }
         GlobalTWClass.addSingleTest(singleTest!!)
     }
 
+    //Si puo' anche includere il messaggio di errore!!! se si vuole
     override fun failed(e: Throwable?, description: Description?) {
         super.failed(e, description)
         //val singleTest = description?.let { SingleTest(it.methodName!!, customFailureWord /*, e.toString()*/) }
-        val singleTest: LinkedHashMap<String, String>? = description?.let {
-            SingleTest("Nome del test", it.methodName!!, "Risultato", customFailureWord).rendiMappa() }
+        //val singleTest: LinkedHashMap<String, String>? = description?.let { SingleTest("Nome del test", it.methodName!!, "Risultato", customFailureWord).rendiMappa() }
+        val singleTest: LinkedHashMap<String, String>? = description?.let { linkedMapOf("Nome del Test" to it.methodName!!, "Risultato" to customFailureWord) }
         GlobalTWClass.addSingleTest(singleTest!!)
     }
 
