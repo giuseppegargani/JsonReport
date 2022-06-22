@@ -21,7 +21,7 @@ class ExampleInstrumentedTest: GlobalTWClass("Successo", "Fallimento") {
     //Optional configuration block
     init {
         customName = "beppeReportJson"
-        customPath = "/reports"
+        customPath = "/report"
     }
 
     @Test

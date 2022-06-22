@@ -8,7 +8,15 @@ import kotlinx.serialization.Serializable
 
 const val eccomi = "campo"
 
-data class CompositeTestClass (var package_name:String, var test_classes_list: MutableList<SingleClass>)
+//val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<Map<String,String>>
+data class CompositeTestClass (var packageNameKey: String = "Package Name",  var packageNameValue:String, var classesListKey: String = "test classes list", var classesListValue: MutableList<Map<Any, Any>>){
+
+    fun rendiMappa(): Map<Any, Any> {
+        val listaFinale = mapOf<Any,Any>(packageNameKey to packageNameValue, classesListKey to classesListValue )
+        return listaFinale
+    }
+
+}
 
 //data class SingleClass( var test_class_name:String,  var tests_list: MutableList<Map<String, String>>)
 

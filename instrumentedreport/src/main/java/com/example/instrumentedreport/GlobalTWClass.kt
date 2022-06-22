@@ -135,12 +135,12 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
 
         //queste sono le variabili custom
         var customPath = ""
-        var customName = "JsonTestReport"
+        var customName = "beppeReportJson"
 
         //variabile della lista dei singoli tests (data class SingleTest)
         var listaSingleTests = mutableListOf<Map<String, String>>()
         //questo e' l'oggetto che viene letto (se il file e' gia' presente)
-        var globalTestObject: CompositeTestClass? = null
+        var globalTestObject: Map<Any, Any>? = null
 
         var pckgDenomination: String = ""
         var actualClass: String = ""
@@ -164,9 +164,10 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //if a globalTestReport already exists return a global file to the companion object corresponding variable
-        fun verifyPresence(): CompositeTestClass? {
+        //se il file esiste lo carica come oggetto (peer modificarlo)
+        fun verifyPresence(): Map<Any, Any>? {
             //local variable
-            var localObject: CompositeTestClass? = null
+            var localObject: Map<Any, Any>? = null
 
             //check if exists already a file
             val context= InstrumentationRegistry.getInstrumentation().targetContext
@@ -178,9 +179,12 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             //we'll be able to change the fileName
             val file = File(path, "$customName.json")
 
+            Log.d("giuseppeDyn", "PATH: $path e file: $file")
+
             if(file.exists()){
                 //if exists assign to the global variable
                 localObject=leggiJson(file)
+                Log.d("giuseppeJson", "il file esiste gia'  $localObject")
             }
             else { Log.d("giuseppeJson", "il file NON esiste gia'") }
 
@@ -195,7 +199,7 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         //Write the json file!!!
         fun createJson(){
 
-            var actualGlobalClass: CompositeTestClass? = null
+            var actualGlobalClass: Map<Any, Any>? = null
 
             //verifica se esiste o meno
             val context= InstrumentationRegistry.getInstrumentation().targetContext
@@ -208,13 +212,15 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             val file = File(path, "$customName.json")
 
             //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
+            //se null vuol dire che non esisteva prima e quindi si crea velocemente!!! come? classe
             if(globalTestObject==null) {
-                val actualTestClass = SingleClass("NomeClasse", actualClass, "Tests List", listaSingleTests)
-                actualGlobalClass = CompositeTestClass(pckgDenomination, mutableListOf(actualTestClass))
+                //si puo' anche eliminare e fare direttamente una mappa (con valori CUSTOM)
+                val actualTestClass = SingleClass("NomeClasse", actualClass, "Tests List", listaSingleTests).rendiMappa()
+                actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", mutableListOf(actualTestClass)).rendiMappa()
                 Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
             }
             else {
-                Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
+                /*Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
                 //check if the test class already exists (otherwise simply add)
                 if(globalTestObject!!.test_classes_list!!.any{ it.test_class_name== actualClass }) {
                     globalTestObject!!.test_classes_list!!.filter { it.test_class_name== actualClass }.forEach { it.tests_list= listaSingleTests }
@@ -229,11 +235,13 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                     newClassesList.add(actualTestClass)
                     //we create a new CompositeTestClass
                     actualGlobalClass= CompositeTestClass(globalTestObject!!.package_name, newClassesList)
-                }
+                }*/
             }
 
             //convert in Json
             var finalJsonString = Gson().toJson(actualGlobalClass)
+
+            Log.d("giuseppeDyn", "file: $file FINALJSON $finalJsonString e tipo: ${finalJsonString is String}")
 
             //writing to file
             val stream = FileOutputStream(file)
@@ -243,9 +251,9 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //si recupera un oggetto Json da un file!!!
-        fun leggiJson (file: File): CompositeTestClass? {
+        fun leggiJson (file: File): Map<Any, Any>? {
             var txt: String? = null
-            var compositeTestClass:CompositeTestClass? = null
+            var compositeTestClass:Map<Any, Any>? = null
 
             try {
                 val reader = FileReader(file)
@@ -257,8 +265,10 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             }
             //se text diverso da null convertilo in oggetto Json (altrimenti restituira' null come singleClass)
             txt?.let {
-                compositeTestClass = Gson().fromJson<CompositeTestClass>(it, CompositeTestClass::class.java)
+                compositeTestClass = Gson().fromJson<Map<Any, Any>>(it, Map::class.java)
             }
+
+            Log.d("giuseppeDyn", "Valore di Json: $compositeTestClass")
 
             return compositeTestClass
         }
