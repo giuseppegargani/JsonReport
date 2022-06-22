@@ -243,9 +243,19 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                 Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
                 //check if the test class already exists (otherwise simply add)
 
-                val elencoClassi: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+                //COME ERA PRIMA!!!!! direttamente!!!!
+                //val elencoClassi: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+
+
                 //Gson().fromJson<LinkedHashMap<Any, Any>>(it, LinkedHashMap::class.java)
-                //val elencoCl: MutableList<LinkedHashMap<Any,Any>> = Gson().fromJson<LinkedHashMap<Any, Any>>((globalTestObject!!.getValue("Test Classes")), MutableList::class.java)
+                val elencoCl: MutableList<Any> = globalTestObject!!.getValue("Test Classes") as MutableList<Any>
+                val listaNuova = mutableListOf<LinkedHashMap<Any,Any>>()
+                    elencoCl.forEach { cl->
+                    val nuova: Map<Any,Any> = cl as Map<Any,Any>
+                        listaNuova.add(nuova as LinkedHashMap<Any, Any>)
+                }
+                val elencoClassi = listaNuova
+
                 val listaClassi: MutableList<Any> = globalTestObject!!.getValue("Test Classes") as MutableList<Any>
                 //val listaClassiDef: MutableList<LinkedHashMap<Any,Any>> = listaClassi.forEach { cl-> cl as LinkedHashMap<Any,Any> }
 
@@ -267,7 +277,18 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                         //val actualTestClass = SingleClass(actualClass, listaSingleTests)
                         val actualTestClass: LinkedHashMap<Any, Any> = linkedMapOf("Nome Classe" to actualClass, "Tests List" to listaSingleTests)
                         //we create a new list of test classes
-                        val newClassesList: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+
+                        //COME ERA PRIMA!!!!!
+                        //val newClassesList: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+
+                        val elencoCl: MutableList<Any> = globalTestObject!!.getValue("Test Classes") as MutableList<Any>
+                        val listaNuova = mutableListOf<LinkedHashMap<Any,Any>>()
+                        elencoCl.forEach { cl->
+                            val nuova: Map<Any,Any> = cl as Map<Any,Any>
+                            listaNuova.add(nuova as LinkedHashMap<Any, Any>)
+                        }
+                        val newClassesList = listaNuova
+
                         //and we add a new element
                         newClassesList.add(actualTestClass)
                         //we create a new CompositeTestClass
