@@ -9,10 +9,10 @@ import kotlinx.serialization.Serializable
 const val eccomi = "campo"
 
 //val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<Map<String,String>>
-data class CompositeTestClass (var packageNameKey: String = "Package Name",  var packageNameValue:String, var classesListKey: String = "test classes list", var classesListValue: MutableList<HashMap<Any, Any>>){
+data class CompositeTestClass (var packageNameKey: String = "Package Name",  var packageNameValue:String, var classesListKey: String = "test classes list", var classesListValue: MutableList<LinkedHashMap<Any, Any>>){
 
-    fun rendiMappa(): Map<Any, Any> {
-        val listaFinale = hashMapOf<Any,Any>(packageNameKey to packageNameValue, classesListKey to classesListValue )
+    fun rendiMappa(): LinkedHashMap<Any, Any> {
+        val listaFinale = linkedMapOf<Any,Any>(packageNameKey to packageNameValue, classesListKey to classesListValue )
         return listaFinale
     }
 
@@ -21,10 +21,10 @@ data class CompositeTestClass (var packageNameKey: String = "Package Name",  var
 //data class SingleClass( var test_class_name:String,  var tests_list: MutableList<Map<String, String>>)
 
 //Verifica in ingresso i tipi dei parametri!!! (tra cui lista di mappe Stringa, Stringa)
-class SingleClass ( val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<HashMap<String,String>> ) {
+class SingleClass ( val nameClassKey: String = "Class Name", val nameClassValue: String, val eventsTestKey: String = "Tests Lists", val eventsTestValue: MutableList<LinkedHashMap<String,String>> ) {
 
-    fun rendiMappa(): HashMap<Any, Any> {
-        val listaFinale = hashMapOf<Any,Any>(nameClassKey to nameClassValue, eventsTestKey to eventsTestValue )
+    fun rendiMappa(): LinkedHashMap<Any, Any> {
+        val listaFinale = linkedMapOf<Any,Any>(nameClassKey to nameClassValue, eventsTestKey to eventsTestValue )
         return listaFinale
     }
 }
@@ -36,8 +36,8 @@ class SingleClass ( val nameClassKey: String = "Class Name", val nameClassValue:
 //verifica di tipo dei parametri (PARAGONE NON NECESSARIO tra elementi)
 class SingleTest ( val nameTestKey: String = "Test Name", val nameTestValue: String, val eventTestKey: String = "Outcome", val eventTestValue: String  /* AGGIUNTA ALTRI DATI*/  ) {
 
-    fun rendiMappa(): HashMap<String, String>  {
-        val listaFinale = hashMapOf<String, String>(nameTestKey to nameTestValue, eventTestKey to eventTestValue)
+    fun rendiMappa(): LinkedHashMap<String, String>  {
+        val listaFinale = linkedMapOf<String, String>(nameTestKey to nameTestValue, eventTestKey to eventTestValue)
         return listaFinale
     }
 }

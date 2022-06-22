@@ -138,13 +138,13 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
     companion object {
 
         //queste sono le variabili custom
-        var customPath = "/reports"
-        var customName = "beppeReportJson"
+        var customPath = ""
+        var customName = "JsonTestReport"
 
         //variabile della lista dei singoli tests (data class SingleTest)
-        var listaSingleTests = mutableListOf<HashMap<String, String>>()
+        var listaSingleTests = mutableListOf<LinkedHashMap<String, String>>()
         //questo e' l'oggetto che viene letto (se il file e' gia' presente)
-        var globalTestObject: HashMap<Any, Any>? = null
+        var globalTestObject: LinkedHashMap<Any, Any>? = null
 
         var pckgDenomination: String = ""
         var actualClass: String = ""
@@ -152,20 +152,20 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         @BeforeClass
         @JvmStatic
         fun beforeClass(){
-            //Log.d("giuseppeCheck", "valore di globalTestObject $globalTestObject")
-            //Log.d("giuseppeCostruttore", "Costruttore secondario e'")
             listaSingleTests = mutableListOf()
-
-            //verifica se per caso esiste già un file json con i risultati
+            //verifica se per caso esiste già un file json con i risultati (VERIFICA E PRENDE IL VALORE)
+            //Se NON ESISTE GIA' il suo valore sara' null!!!!! NULLABLE  (un primo controllo) ma ci vogliono altri controlli aggiunti SULLA STRUTTURA!!
             globalTestObject = verifyPresence()
 
-            //verifica che puo' leggere il valore di alcuni campi:
-            /*val elencoClassi: MutableList<Map<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<Map<Any, Any>>
-            Log.d("giuseppeDyn", "valore di un singolo campo: ${elencoClassi}")
-            if(elencoClassi.size>0) { elencoClassi.forEach {
-                    cl-> if(cl.getValue("NomeClasse")=="ExampleInstrumentedTest") { Log.d("giuseppeDyn", "Corrisponde alla classe ExampleInstrumedTest e il valore ${cl.getValue("Tests List")}")} }
-            }*/
-
+            globalTestObject?.let {
+                //verifica che puo' leggere il valore di alcuni campi (LE SEGUENTI RIGHE SONO SOLO PER IL DEBUG!!) Deserializzazione!!!
+                Log.d("giuseppeDyn", "ELENCOCLASSI prima di conversione ${globalTestObject!!.getValue("Test Classes")}")
+                val elencoClassi: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+                Log.d("giuseppeDyn", "valore di un singolo campo: ${elencoClassi}")
+                if(elencoClassi.size>0) { elencoClassi.forEach {
+                        cl-> if(cl.getValue("NomeClasse")=="ExampleInstrumentedTest") { Log.d("giuseppeDyn", "Corrisponde alla classe ExampleInstrumedTest e il valore ${cl.getValue("Tests List")}")} }
+                }
+            }
         }
 
         //Si devono mettere come static!!!
@@ -175,12 +175,13 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             createJson()
         }
 
-        //if a globalTestReport already exists return a global file to the companion object corresponding variable
-        //se il file esiste lo carica come oggetto (per modificarlo)
-        //Restituisce una mappa di Any!!!!!!!
-        fun verifyPresence(): HashMap<Any, Any>? {
-            //local variable
-            var localObject: HashMap<Any, Any>? = null
+        /*if a globalTestReport already exists return a global file to the companion object corresponding variable
+        se il file esiste lo carica come oggetto (per modificarlo)
+        Restituisce una mappa di Any!!!!!!!
+        Viene lanciato prima della classe dei test HASHMAP*/
+        fun verifyPresence(): LinkedHashMap<Any, Any>? {
+            //Questa e' una variabile locale solo per questa funzione!!!
+            var localObject: LinkedHashMap<Any, Any>? = null
 
             //check if exists already a file
             val context= InstrumentationRegistry.getInstrumentation().targetContext
@@ -192,37 +193,38 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             //we'll be able to change the fileName
             val file = File(path, "$customName.json")
 
-            Log.d("giuseppeDyn", "PATH: $path e file: $file")
+            Log.d("giuseppeDyn", "PATH in VERIFICA PRESENZA: $path e file: $file")
 
             if(file.exists()){
                 //if exists assign to the global variable
                 localObject=leggiJson(file)
-                Log.d("giuseppeJson", "il file esiste gia'  $localObject")
+                Log.d("giuseppeDyn", "il file esiste gia'  $localObject")
             }
-            else { Log.d("giuseppeJson", "il file NON esiste gia'") }
+            else { Log.d("giuseppeDyn", "il file NON esiste gia'") }
 
             return localObject
         }
 
         //add singleTest to the local list!!!!
         //Aggiunge singleTest alla lista locale di singleTest (che sono di tipo Map<String,String>
-        fun addSingleTest(singleTest: HashMap<String,String>){
+        fun addSingleTest(singleTest: LinkedHashMap<String,String>){
             listaSingleTests.add(singleTest)
         }
 
         //Write the json file!!!
         fun createJson(){
 
-            var actualGlobalClass: Map<Any, Any>? = null
+            var actualGlobalClass: LinkedHashMap<Any, Any>?
 
             //verifica se esiste o meno
             val context= InstrumentationRegistry.getInstrumentation().targetContext
             //val path: File = context.getExternalFilesDir(null)!!
 
+            //Se non esiste provvedere a creare anche la directory!!!!
             val path: File = File(context.getExternalFilesDir(null)!!.toString()+customPath)
             if(!path.exists()) { path.mkdir()}   //se la path non esiste si deve creare la cartellina!! (da customPath!!!) DA VERIFICARE!! path e name
 
-            Log.d("giuseppeFile", "path $path")
+            Log.d("giuseppeFile", "path $path e customName $customName")
             val file = File(path, "$customName.json")
 
             //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
@@ -231,30 +233,49 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             if(globalTestObject==null) {
                 //si puo' anche eliminare e fare direttamente una mappa (con valori CUSTOM)
                     //e in questo caso nella classe si controllano alcuni tipi (in entrata)
-                val actualTestClass = SingleClass("NomeClasse", actualClass, "Tests List", listaSingleTests).rendiMappa()
-                actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", mutableListOf(actualTestClass)).rendiMappa()
+                //val actualTestClass = SingleClass("NomeClasse", actualClass, "Tests List", listaSingleTests).rendiMappa()
+                val actualTestClass: LinkedHashMap<Any, Any> = linkedMapOf("Nome Classe" to actualClass, "Tests List" to listaSingleTests)
+                actualGlobalClass = linkedMapOf("Nome Pacchetto" to pckgDenomination, "Test Classes" to mutableListOf(actualTestClass))
+                //actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", mutableListOf(actualTestClass)).rendiMappa()
                 Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
             }
             else {
                 Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
                 //check if the test class already exists (otherwise simply add)
 
-                val elencoClassi: MutableList<HashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<HashMap<Any, Any>>
+                val elencoClassi: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+                //Gson().fromJson<LinkedHashMap<Any, Any>>(it, LinkedHashMap::class.java)
+                //val elencoCl: MutableList<LinkedHashMap<Any,Any>> = Gson().fromJson<LinkedHashMap<Any, Any>>((globalTestObject!!.getValue("Test Classes")), MutableList::class.java)
+                val listaClassi: MutableList<Any> = globalTestObject!!.getValue("Test Classes") as MutableList<Any>
+                //val listaClassiDef: MutableList<LinkedHashMap<Any,Any>> = listaClassi.forEach { cl-> cl as LinkedHashMap<Any,Any> }
+
                 Log.d("beppe", "numero elenco classi ${elencoClassi.size} e $elencoClassi")
                 //se la lista delle classi e' maggiore di zero (debugabile come size) e per ognuna verifica il nome della classe
                 Log.d("beppe", "primo elemento classe ${elencoClassi[0]}")
                 /*for (i in 0..elencoClassi.size) {
                     Log.d("beppe", "VALORE DENTRO ${elencoClassi[i].getValue("NomeClasse")}")
-
-
                 }*/
+                //vediamo se si puo' sostituire con forEach!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 for (i in 0..elencoClassi.size) {
                     Log.d("beppe", "DENTRO CONDIZIONE CUSTOM")
                     if(elencoClassi[i].getValue("NomeClasse")== actualClass) { Log.d("giuseppeDyn", "Corrisponde alla classe beppe ${actualClass} e il valore ${elencoClassi[i].getValue("Tests List")}")
                         //cl.getValue("Tests List") = listaSingleTests
                         elencoClassi[i]["Test List"] = listaSingleTests
                     }
-                    Log.d("beppe", "DOPO CAMBIAMENTO $elencoClassi[i]")
+                    else {
+                        //we create a new SingleClass (adding also the classname)
+                        //val actualTestClass = SingleClass(actualClass, listaSingleTests)
+                        val actualTestClass: LinkedHashMap<Any, Any> = linkedMapOf("Nome Classe" to actualClass, "Tests List" to listaSingleTests)
+                        //we create a new list of test classes
+                        val newClassesList: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
+                        //and we add a new element
+                        newClassesList.add(actualTestClass)
+                        //we create a new CompositeTestClass
+                        //actualGlobalClass= CompositeTestClass(globalTestObject!!.package_name, newClassesList)
+                        //actualGlobalClass= linkedMapOf("Nome Pacchetto" to pckgDenomination, "Test Classes" to mutableListOf(newClassesList))
+                    }
+
+                    Log.d("beppe", "DOPO CAMBIAMENTO ${elencoClassi[i]}")
                 }
 
                 /*elencoClassi.forEach { cl->
@@ -263,15 +284,15 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                     //cl.getValue("Tests List") = listaSingleTests
                     cl["Test List"] = listaSingleTests
                     }}*/
-                actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", elencoClassi).rendiMappa()
+                //actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", elencoClassi).rendiMappa()
+                actualGlobalClass = linkedMapOf("Nome Pacchetto" to pckgDenomination, "Test Classes" to elencoClassi)
                 Log.d("beppe", "actualGlobalClass $actualGlobalClass")
-
 
                /* if(globalTestObject!!.getValue("") !!.any{ it.test_class_name== actualClass }) {
                     globalTestObject!!.test_classes_list!!.filter { it.test_class_name== actualClass }.forEach { it.tests_list= listaSingleTests }
                     actualGlobalClass= CompositeTestClass(globalTestObject!!.package_name, globalTestObject!!.test_classes_list)
-                }
-                else {
+                }*/
+                /*else {
                     //we create a new SingleClass (adding also the classname)
                     val actualTestClass = SingleClass(actualClass, listaSingleTests)
                     //we create a new list of test classes
@@ -296,9 +317,9 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //si recupera un oggetto Json da un file!!!
-        fun leggiJson (file: File): HashMap<Any, Any>? {
+        fun leggiJson (file: File): LinkedHashMap<Any, Any>? {
             var txt: String? = null
-            var compositeTestClass:HashMap<Any, Any>? = null
+            var compositeTestClass:LinkedHashMap<Any, Any>? = null
 
             try {
                 val reader = FileReader(file)
@@ -310,10 +331,11 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             }
             //se text diverso da null convertilo in oggetto Json (altrimenti restituira' null come singleClass)
             txt?.let {
-                compositeTestClass = Gson().fromJson<HashMap<Any, Any>>(it, HashMap::class.java)
-                val map: HashMap<*, *> = Gson().fromJson(it, HashMap::class.java)
+                compositeTestClass = Gson().fromJson<LinkedHashMap<Any, Any>>(it, CompositeTestClass::class.java)
+                val map: LinkedHashMap<*, *> = Gson().fromJson(it, LinkedHashMap::class.java)
 
-                Log.d("giuseppeDyn", "Valore di Json: $map  $compositeTestClass")
+                Log.d("giuseppeDyn", "Valore di Json: $map   ${compositeTestClass.getValue("Test Classes")}")
+                Log.d("giuseppeDyn", "VERIFICA TIPO: ${compositeTestClass.getValue("Test Classes") is MutableList<LinkedHashMap<Any,Any>>}")
             }
 
             return compositeTestClass

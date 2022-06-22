@@ -46,7 +46,7 @@ open class SingleTestWatcher(var customSuccessWord: String = TestResultStatus.SU
         super.succeeded(description)
         Log.d("giuseppeCustom", " customSuccessWord $customSuccessWord")
         //val singleTest = description?.let { SingleTest(it.methodName!!, customSuccessWord) }
-        val singleTest: HashMap<String, String>? = description?.let { SingleTest("Nome del test", it.methodName!!, "Risultato", customSuccessWord).rendiMappa()}
+        val singleTest: LinkedHashMap<String, String>? = description?.let { SingleTest("Nome del test", it.methodName!!, "Risultato", customSuccessWord).rendiMappa()}
         val singleObject = JSONObject()
         //json.putAll( data );
         //singleObject.put( )
@@ -56,7 +56,7 @@ open class SingleTestWatcher(var customSuccessWord: String = TestResultStatus.SU
     override fun failed(e: Throwable?, description: Description?) {
         super.failed(e, description)
         //val singleTest = description?.let { SingleTest(it.methodName!!, customFailureWord /*, e.toString()*/) }
-        val singleTest: HashMap<String, String>? = description?.let {
+        val singleTest: LinkedHashMap<String, String>? = description?.let {
             SingleTest("Nome del test", it.methodName!!, "Risultato", customFailureWord).rendiMappa() }
         GlobalTWClass.addSingleTest(singleTest!!)
     }
