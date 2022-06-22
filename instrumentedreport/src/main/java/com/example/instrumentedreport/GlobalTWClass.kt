@@ -157,7 +157,7 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             //Se NON ESISTE GIA' il suo valore sara' null!!!!! NULLABLE  (un primo controllo) ma ci vogliono altri controlli aggiunti SULLA STRUTTURA!!
             globalTestObject = verifyPresence()
 
-            globalTestObject?.let {
+            /*globalTestObject?.let {
                 //verifica che puo' leggere il valore di alcuni campi (LE SEGUENTI RIGHE SONO SOLO PER IL DEBUG!!) Deserializzazione!!!
                 Log.d("giuseppeDyn", "ELENCOCLASSI prima di conversione ${globalTestObject!!.getValue("Test Classes")}")
                 val elencoClassi: MutableList<LinkedHashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<LinkedHashMap<Any, Any>>
@@ -165,7 +165,7 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
                 if(elencoClassi.size>0) { elencoClassi.forEach {
                         cl-> if(cl.getValue("NomeClasse")=="ExampleInstrumentedTest") { Log.d("giuseppeDyn", "Corrisponde alla classe ExampleInstrumedTest e il valore ${cl.getValue("Tests List")}")} }
                 }
-            }
+            }*/
         }
 
         //Si devono mettere come static!!!
@@ -331,11 +331,11 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             }
             //se text diverso da null convertilo in oggetto Json (altrimenti restituira' null come singleClass)
             txt?.let {
-                compositeTestClass = Gson().fromJson<LinkedHashMap<Any, Any>>(it, CompositeTestClass::class.java)
+                compositeTestClass = Gson().fromJson<LinkedHashMap<Any, Any>>(it, LinkedHashMap::class.java)
                 val map: LinkedHashMap<*, *> = Gson().fromJson(it, LinkedHashMap::class.java)
 
-                Log.d("giuseppeDyn", "Valore di Json: $map   ${compositeTestClass.getValue("Test Classes")}")
-                Log.d("giuseppeDyn", "VERIFICA TIPO: ${compositeTestClass.getValue("Test Classes") is MutableList<LinkedHashMap<Any,Any>>}")
+                //Log.d("giuseppeDyn", "Valore di Json: $map   ${compositeTestClass.getValue("Test Classes")}")
+                //Log.d("giuseppeDyn", "VERIFICA TIPO: ${compositeTestClass.getValue("Test Classes") is MutableList<LinkedHashMap<Any,Any>>}")
             }
 
             return compositeTestClass
