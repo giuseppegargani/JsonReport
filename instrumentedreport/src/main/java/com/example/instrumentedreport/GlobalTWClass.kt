@@ -112,6 +112,10 @@ package com.example.instrumentedreport
 
  */
 
+/* GlobalTestObject viene caricato (dopo aver verificato la presenza) e corrisponde alla mappa completa
+    Altre tre variabili: (lista singoli test, nome pacchetto, e cone classe Locale)
+ */
+
 import android.content.Context
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
@@ -134,13 +138,13 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
     companion object {
 
         //queste sono le variabili custom
-        var customPath = ""
+        var customPath = "/reports"
         var customName = "beppeReportJson"
 
         //variabile della lista dei singoli tests (data class SingleTest)
-        var listaSingleTests = mutableListOf<Map<String, String>>()
+        var listaSingleTests = mutableListOf<HashMap<String, String>>()
         //questo e' l'oggetto che viene letto (se il file e' gia' presente)
-        var globalTestObject: Map<Any, Any>? = null
+        var globalTestObject: HashMap<Any, Any>? = null
 
         var pckgDenomination: String = ""
         var actualClass: String = ""
@@ -154,6 +158,14 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
 
             //verifica se per caso esiste già un file json con i risultati
             globalTestObject = verifyPresence()
+
+            //verifica che puo' leggere il valore di alcuni campi:
+            /*val elencoClassi: MutableList<Map<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<Map<Any, Any>>
+            Log.d("giuseppeDyn", "valore di un singolo campo: ${elencoClassi}")
+            if(elencoClassi.size>0) { elencoClassi.forEach {
+                    cl-> if(cl.getValue("NomeClasse")=="ExampleInstrumentedTest") { Log.d("giuseppeDyn", "Corrisponde alla classe ExampleInstrumedTest e il valore ${cl.getValue("Tests List")}")} }
+            }*/
+
         }
 
         //Si devono mettere come static!!!
@@ -164,10 +176,11 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //if a globalTestReport already exists return a global file to the companion object corresponding variable
-        //se il file esiste lo carica come oggetto (peer modificarlo)
-        fun verifyPresence(): Map<Any, Any>? {
+        //se il file esiste lo carica come oggetto (per modificarlo)
+        //Restituisce una mappa di Any!!!!!!!
+        fun verifyPresence(): HashMap<Any, Any>? {
             //local variable
-            var localObject: Map<Any, Any>? = null
+            var localObject: HashMap<Any, Any>? = null
 
             //check if exists already a file
             val context= InstrumentationRegistry.getInstrumentation().targetContext
@@ -192,7 +205,8 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //add singleTest to the local list!!!!
-        fun addSingleTest(singleTest: Map<String,String>){
+        //Aggiunge singleTest alla lista locale di singleTest (che sono di tipo Map<String,String>
+        fun addSingleTest(singleTest: HashMap<String,String>){
             listaSingleTests.add(singleTest)
         }
 
@@ -206,23 +220,54 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             //val path: File = context.getExternalFilesDir(null)!!
 
             val path: File = File(context.getExternalFilesDir(null)!!.toString()+customPath)
-            if(!path.exists()) { path.mkdir()}
+            if(!path.exists()) { path.mkdir()}   //se la path non esiste si deve creare la cartellina!! (da customPath!!!) DA VERIFICARE!! path e name
 
             Log.d("giuseppeFile", "path $path")
             val file = File(path, "$customName.json")
 
             //qui si deve comporre il risultato (lista locale e globale!! (verifica se esiste una classe con il solito nome (se il file globale e' null allora scrivi da zero altrimenti aggiungi)
-            //se null vuol dire che non esisteva prima e quindi si crea velocemente!!! come? classe
+            //se null vuol dire che non esisteva prima e quindi si crea velocemente!!! come classeo anche senza classe
+            //
             if(globalTestObject==null) {
                 //si puo' anche eliminare e fare direttamente una mappa (con valori CUSTOM)
+                    //e in questo caso nella classe si controllano alcuni tipi (in entrata)
                 val actualTestClass = SingleClass("NomeClasse", actualClass, "Tests List", listaSingleTests).rendiMappa()
                 actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", mutableListOf(actualTestClass)).rendiMappa()
                 Log.d("giuseppeJson", "globalObject e' null !!!!!!!!!!!!!! e $actualGlobalClass")
             }
             else {
-                /*Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
+                Log.d("giuseppeJson", "globalObject non e' null !!!!!!!!!!!!!! e $globalTestObject")
                 //check if the test class already exists (otherwise simply add)
-                if(globalTestObject!!.test_classes_list!!.any{ it.test_class_name== actualClass }) {
+
+                val elencoClassi: MutableList<HashMap<Any,Any>> = globalTestObject!!.getValue("Test Classes") as MutableList<HashMap<Any, Any>>
+                Log.d("beppe", "numero elenco classi ${elencoClassi.size} e $elencoClassi")
+                //se la lista delle classi e' maggiore di zero (debugabile come size) e per ognuna verifica il nome della classe
+                Log.d("beppe", "primo elemento classe ${elencoClassi[0]}")
+                /*for (i in 0..elencoClassi.size) {
+                    Log.d("beppe", "VALORE DENTRO ${elencoClassi[i].getValue("NomeClasse")}")
+
+
+                }*/
+                for (i in 0..elencoClassi.size) {
+                    Log.d("beppe", "DENTRO CONDIZIONE CUSTOM")
+                    if(elencoClassi[i].getValue("NomeClasse")== actualClass) { Log.d("giuseppeDyn", "Corrisponde alla classe beppe ${actualClass} e il valore ${elencoClassi[i].getValue("Tests List")}")
+                        //cl.getValue("Tests List") = listaSingleTests
+                        elencoClassi[i]["Test List"] = listaSingleTests
+                    }
+                    Log.d("beppe", "DOPO CAMBIAMENTO $elencoClassi[i]")
+                }
+
+                /*elencoClassi.forEach { cl->
+                    Log.d("beppe", "DENTRO CONDIZIONE CUSTOM")
+                    if(cl.getValue("NomeClasse")== actualClass) { Log.d("giuseppeDyn", "Corrisponde alla classe beppe ${actualClass} e il valore ${cl.getValue("Tests List")}")
+                    //cl.getValue("Tests List") = listaSingleTests
+                    cl["Test List"] = listaSingleTests
+                    }}*/
+                actualGlobalClass = CompositeTestClass("Nome pacchetto", pckgDenomination, "Test Classes", elencoClassi).rendiMappa()
+                Log.d("beppe", "actualGlobalClass $actualGlobalClass")
+
+
+               /* if(globalTestObject!!.getValue("") !!.any{ it.test_class_name== actualClass }) {
                     globalTestObject!!.test_classes_list!!.filter { it.test_class_name== actualClass }.forEach { it.tests_list= listaSingleTests }
                     actualGlobalClass= CompositeTestClass(globalTestObject!!.package_name, globalTestObject!!.test_classes_list)
                 }
@@ -251,9 +296,9 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
         }
 
         //si recupera un oggetto Json da un file!!!
-        fun leggiJson (file: File): Map<Any, Any>? {
+        fun leggiJson (file: File): HashMap<Any, Any>? {
             var txt: String? = null
-            var compositeTestClass:Map<Any, Any>? = null
+            var compositeTestClass:HashMap<Any, Any>? = null
 
             try {
                 val reader = FileReader(file)
@@ -265,10 +310,11 @@ open class GlobalTWClass(var customSuccess: String = TestResultStatus.SUCCESS.to
             }
             //se text diverso da null convertilo in oggetto Json (altrimenti restituira' null come singleClass)
             txt?.let {
-                compositeTestClass = Gson().fromJson<Map<Any, Any>>(it, Map::class.java)
-            }
+                compositeTestClass = Gson().fromJson<HashMap<Any, Any>>(it, HashMap::class.java)
+                val map: HashMap<*, *> = Gson().fromJson(it, HashMap::class.java)
 
-            Log.d("giuseppeDyn", "Valore di Json: $compositeTestClass")
+                Log.d("giuseppeDyn", "Valore di Json: $map  $compositeTestClass")
+            }
 
             return compositeTestClass
         }

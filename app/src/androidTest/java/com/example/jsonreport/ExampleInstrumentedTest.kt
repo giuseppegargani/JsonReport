@@ -35,7 +35,7 @@ class ExampleInstrumentedTest: GlobalTWClass("Successo", "Fallimento") {
     fun useAppContext2() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.jsonrepor", appContext.packageName)
+        assertEquals("com.example.jsonreport", appContext.packageName)
     }
 
     @Ignore
